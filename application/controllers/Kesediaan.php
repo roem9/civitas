@@ -46,7 +46,9 @@ class Kesediaan extends CI_CONTROLLER{
 
     // add
         public function add_kesediaan(){
-            $data = $this->Civitas_model->add_kesediaan();
+            if($this->input->post("sedia")){
+                $data = $this->Civitas_model->add_kesediaan();
+            }
             
             $this->session->set_flashdata('pesan', '<div class="alert alert-success alert-dismissible fade show" role="alert">Berhasil mengubah data kesediaan mengajar<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
 
