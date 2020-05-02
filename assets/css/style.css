@@ -1,0 +1,21 @@
+@font-face {
+    font-family: "Candara";
+    src: url("../font/Candara.ttf");
+}
+
+html, body {
+    font-family: "Candara";
+}
+
+.fit-image{
+    width: 100%;
+    object-fit: cover;
+    height: 300px; 
+}
+
+.sticker {
+    margin: 0 auto;
+    top: 0;
+    width: 100%;
+    z-index: 999;
+}
