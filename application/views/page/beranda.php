@@ -54,8 +54,13 @@
                 <div class="col-12 col-md-6 mb-3">
                     <ul class="list-group">
                         <li class="list-group-item list-group-item-success"><i class="fa fa-money-bill mr-2 text-dark"></i> Honor</li>
-                        <li class="list-group-item"><?= rupiah($honor_kbm+$honor_badal+$ot)?></li>
+                        <li class="list-group-item"><?= rupiah($honor_kbm+$honor_badal)?></li>
                     </ul>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12 mb-3">
+                   <div class="alert alert-info"><i class="fa fa-info-circle text-info mr-1"></i>selama masa pandemi honor overtime ditiadakan</div>
                 </div>
             </div>
         </div>

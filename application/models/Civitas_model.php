@@ -425,13 +425,15 @@ class Civitas_model extends CI_Model{
         $this->db->where("nip", $nip);
         return $this->db->get()->result_array();
     }
-
-    public function get_total_kbm_by_jadwal($id_jadwal){
+    
+    public function get_total_kbm_by_jadwal_now($id_jadwal){
         $this->db->select("count(id_kbm) as kbm");
         $this->db->from("kbm");
         $where = "id_kbm NOT IN(SELECT id_kbm FROM kbm_badal)";
         $this->db->where($where);
         $this->db->where("id_jadwal", $id_jadwal);
+        $this->db->where("MONTH(tgl)", date('m'));
+        $this->db->where("YEAR(tgl)", date('Y'));
         $this->db->group_by("id_jadwal");
         return $this->db->get()->row_array();
     }

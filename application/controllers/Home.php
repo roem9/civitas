@@ -36,11 +36,10 @@ class Home extends CI_CONTROLLER{
             $data['ot'] = 0;
             $kelas = $this->Civitas_model->get_all_jadwal_kpq($nip);
             foreach ($kelas as $i => $kelas) {
-                $ot = $this->Civitas_model->get_total_kbm_by_jadwal($kelas['id_jadwal']);
+                $ot = $this->Civitas_model->get_total_kbm_by_jadwal_now($kelas['id_jadwal']);
                 $x = $this->ot($gol, $ot['kbm'], $kelas['ot']);
                 $data['ot'] += $x;
             }
-
             // badal
                 $kelas = $this->Civitas_model->get_badal_now($nip);
                 foreach ($kelas as $kelas) {
@@ -60,12 +59,12 @@ class Home extends CI_CONTROLLER{
         
         foreach ($data['kbm'] as $kbm) {
             $data['honor_kbm'] += $kbm['biaya'];
-            $data['honor_kbm'] += $kbm['ot'];
+            // $data['honor_kbm'] += $kbm['ot'];
         }
         
         foreach ($data['badal'] as $kbm) {
             $data['honor_badal'] += $kbm['biaya'];
-            $data['honor_badal'] += $kbm['ot'];
+            // $data['honor_badal'] += $kbm['ot'];
         }
 
         $data['title'] = "Beranda";
