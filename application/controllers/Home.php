@@ -3,7 +3,8 @@ class Home extends CI_CONTROLLER{
     public function __construct(){
         parent::__construct();
         $this->load->model('Civitas_model');
-        if($this->session->userdata('status') != "login"){
+        $this->load->model('Main_model');
+        if($this->session->userdata('status') != "login" && !empty($this->session->userdata('id'))){
             $this->session->set_flashdata('login', 'Maaf, Anda harus login terlebih dahulu');
 			redirect(base_url("login"));
 		}
@@ -11,16 +12,22 @@ class Home extends CI_CONTROLLER{
 
     public function index(){
         $nip = $this->session->userdata('id');
-        $gol = $this->session->userdata('gol');
+        $kpq = $this->Main_model->get_one("kpq", ["nip" => $nip]);
+        // $gol = $this->session->userdata('gol');
+        $gol = $kpq['golongan'];
         
         $data['bulan'] = ["1" => "Januari", "2" => "Februari", "3" => "Maret", "4" => "April", "5" => "Mei", "6" => "Juni", "7" => "Juli", "8" => "Agustus", "9" => "September", "10" => "Oktober", "11" => "November", "12" => "Desember"];
         
-        $data['kelas'] = COUNT($this->Civitas_model->get_all_kelas_kpq($nip));
+        // $data['kelas'] = COUNT($this->Civitas_model->get_all_kelas_kpq($nip));
+        $data['kelas'] = COUNT($this->Main_model->get_all("kelas", ["nip" => $nip]));
         
-        $data['jml_wl'] = COUNT($this->Civitas_model->get_all_wl());
-        $data['jml_kelas'] = COUNT($this->Civitas_model->get_all_jadwal_kpq($nip));
-        $data['jml_inbox'] = COUNT($this->Civitas_model->get_all_inbox_off($nip));
-        $data['jml_badal'] = COUNT($this->Civitas_model->get_all_jadwal_badal_kpq($nip));
+        // sidebar
+            $data['jml_wl'] = COUNT($this->Civitas_model->get_all_wl());
+            $data['jml_kelas'] = COUNT($this->Civitas_model->get_all_jadwal_kpq($nip));
+            // $data['jml_inbox'] = COUNT($this->Civitas_model->get_all_inbox_off($nip));
+            $data['jml_inbox'] = COUNT($this->Main_model->get_all("inbox", ["nip" => $nip, "status" => "off"]));
+            $data['jml_badal'] = COUNT($this->Civitas_model->get_all_jadwal_badal_kpq($nip));
+        // sidebar
         
         $data['jml'] = [
             "senin" => COUNT($this->Civitas_model->get_jadwal_hari_kpq($nip, 'senin')),

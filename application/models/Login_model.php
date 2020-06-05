@@ -15,4 +15,9 @@ class Login_model extends CI_MODEL{
 		$this->db->where("level", "kpq");
 		return $this->db->get()->row_array();
 	}
+
+	public function status_login($nip){
+		$this->db->where("nip", $nip);
+		$this->db->update("kpq", ["login" => 1]);
+	}
 }

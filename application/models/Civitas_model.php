@@ -1,12 +1,14 @@
 <?php
 
 class Civitas_model extends CI_Model{
+    // hapus?
     public function get_data_kpq($nip){
         $this->db->from("kpq");
         $this->db->where("nip", $nip);
         return $this->db->get()->row_array();
     }
 
+    // hapus?
     public function get_all_kelas_kpq($nip){
         $this->db->from("kelas");
         $this->db->where("nip", $nip);
@@ -374,6 +376,7 @@ class Civitas_model extends CI_Model{
         return $this->db->get()->result_array();
     }
 
+    // hapus?
     public function get_all_inbox_off($nip){
         $this->db->from("inbox");
         $this->db->where("nip", $nip);
@@ -404,7 +407,7 @@ class Civitas_model extends CI_Model{
     }
 
     public function get_all_wl(){
-        $this->db->select("a.id_kelas, nama_peserta, tipe_kelas, a.program");
+        $this->db->select("a.id_kelas, nama_peserta, tipe_kelas, a.program, a.status");
         $this->db->from("kelas as a");
         $this->db->join("kelas_koor as b", "a.id_kelas = b.id_kelas");
         $this->db->join("peserta as c", "b.id_peserta = c.id_peserta");
@@ -444,20 +447,34 @@ class Civitas_model extends CI_Model{
         return $this->db->get()->row_array();
     }
 
+    public function get_wl_konfirm($nip){
+        $this->db->select("a.id_kelas, nama_peserta, tipe_kelas, a.program, a.status");
+        $this->db->from("kelas as a");
+        $this->db->join("kelas_koor as b", "a.id_kelas = b.id_kelas");
+        $this->db->join("peserta as c", "b.id_peserta = c.id_peserta");
+        $where = "(pengajar = '{$this->session->userdata('jk')}' OR pengajar = 'Pria&Wanita')";
+        $this->db->where($where);
+        $this->db->where("a.status", "konfirm");
+        $this->db->where("a.nip", $nip);
+        return $this->db->get()->result_array();
+    }
+
     // edit
+        // hapus?
         public function edit_program(){
             $id = $this->input->post("id");
             $program = $this->input->post("program");
-
             $this->db->where("id_kelas", $id);
             $this->db->update("kelas", ["program" => $program]);
         }
 
+        // hapus?
         public function edit_status_inbox($nip){
             $this->db->where("nip", $nip);
             $this->db->update("inbox", ["status" => "on"]);
         }
 
+        // hapus?
         public function edit_kpq(){
             $data = [
                 "t4_lahir" => $this->input->post("t4_lahir", TRUE),
@@ -466,16 +483,23 @@ class Civitas_model extends CI_Model{
                 "alamat" => $this->input->post("alamat", TRUE),
                 "tgl_masuk" => $this->input->post("tgl_masuk", TRUE),
                 "pendidikan" => $this->input->post("pendidikan", TRUE),
-                "jurusan" => $this->input->post("jurusan", TRUE)
+                "jurusan" => $this->input->post("jurusan", TRUE),
+                "no_ktp" => $this->input->post("no_ktp", TRUE)
             ];
 
             $this->db->where("nip", $this->session->userdata("id"));
             $this->db->update("kpq", $data);
         }
 
+        // hapus?
         public function edit_password(){
             $this->db->where("id_admin", $this->session->userdata("id"));
             $this->db->update("admin", ["password" => $this->input->post("pass1")]);
+        }
+
+        public function batal_wl($id_kelas){
+            $this->db->where("id_kelas", $id_kelas);
+            $this->db->update("kelas", ["status" => "wl", "nip" => null]);
         }
     // edit
 
@@ -689,27 +713,29 @@ class Civitas_model extends CI_Model{
 
         }
 
+        // hapus?
         public function add_kesediaan(){
             $nip = $this->session->userdata("id");
             $this->db->where("nip", $nip);
             $this->db->delete("kesediaan");
 
             $sedia = $this->input->post("sedia");
-            foreach ($sedia as $sedia) {
-                $data = explode("|", $sedia);
-
-                $kesediaan = [
-                    "hari" => $data[0],
-                    "jam" => $data[1],
-                    "nip" => $nip
-                ];
-
-                $this->db->insert("kesediaan", $kesediaan);
+            if($sedia){
+                foreach ($sedia as $sedia) {
+                    $data = explode("|", $sedia);
+                    $kesediaan = [
+                        "hari" => $data[0],
+                        "jam" => $data[1],
+                        "nip" => $nip
+                    ];
+                    $this->db->insert("kesediaan", $kesediaan);
+                }
             }
         }
     // add
 
     // delete
+        // hapus?
         public function delete_kbm($id){
             $this->db->where("id_kbm", $id);
             $this->db->where("nip", $this->session->userdata("id"));
@@ -717,6 +743,7 @@ class Civitas_model extends CI_Model{
             return $this->db->affected_rows();
         }
 
+        // hapus?
         public function delete_inbox($id){
             $this->db->where("id_inbox", $id);
             $this->db->where("nip", $this->session->userdata("id"));

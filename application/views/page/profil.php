@@ -52,7 +52,7 @@
                         </div>
                         <div class="form-group">
                             <label for="no_ktp">No. KTP</label>
-                            <input type="text" name="no_ktp" id="no_ktp" class="form-control form-control-sm" value="<?= $kpq['no_ktp']?>" readonly>
+                            <input type="text" name="no_ktp" id="no_ktp" class="form-control form-control-sm" value="<?= $kpq['no_ktp']?>" required>
                         </div>
                         <div class="form-group">
                             <label for="tgl_masuk">Tgl Bergabung</label>

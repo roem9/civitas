@@ -17,7 +17,7 @@
         <div class="container">
             <?php if( $this->session->flashdata('pesan') ) : ?>
                 <div class="row">
-                    <div class="col-12 col-md-6">
+                    <div class="col-12">
                         <?= $this->session->flashdata('pesan');?>
                     </div>
                 </div>
@@ -37,7 +37,11 @@
                                 <li class="list-group-item"><i class="fa fa-map-marker-alt mr-2"></i><?= ucwords($kelas['tipe_kelas'])?></li>
                                 <li class="list-group-item">
                                     <a href="#modalCatatan" data-id="<?= $kelas['id_kelas']?>" data-toggle="modal" class="btn btn-sm btn-success modal-catatan">catatan</a>
-                                    <a href="<?= base_url()?>kelas/ambil_wl/<?= $kelas['id_kelas']?>" onclick="return confirm('Yakin akan mengambil kelas ini?')" class="btn btn-sm btn-primary">ambil kelas</a>
+                                    <?php if($kelas['status'] == 'wl') :?>
+                                        <a href="<?= base_url()?>kelas/ambil_wl/<?= $kelas['id_kelas']?>" onclick="return confirm('Yakin akan mengambil kelas ini?')" class="btn btn-sm btn-primary">ambil kelas</a>
+                                    <?php elseif($kelas['status'] == 'konfirm') :?>
+                                        <a href="<?= base_url()?>kelas/batal_wl/<?= $kelas['id_kelas']?>" onclick="return confirm('Yakin akan membatalkan kelas ini?')" class="btn btn-sm btn-danger">batalkan</a>
+                                    <?php endif;?>
                                 </li>
                             </ul>
                         </div>

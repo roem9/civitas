@@ -12,37 +12,52 @@
               <div class="col-lg-12">
                 <div class="p-5">
                   <div class="text-center">
-                    <h1 class="h4 text-gray-900 mb-4">Welcome Back!</h1>
+                    <h1 class="h4 text-gray-900 mb-4">أَهْلًا وَ سَهْلًا</h1>
                   </div>
-                    <?php if( $this->session->flashdata('login') ) : ?>
+                    <?php if( $this->session->flashdata('pesan') ) : ?>
                         <div class="row">
                             <div class="col-12">
-                                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                                    <?=$this->session->flashdata('login')?>
-                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
+                                <?= $this->session->flashdata('pesan');?>
                                 </div>
-                            </div>
                         </div>
                     <?php endif; ?>
-                    <form action="<?=base_url()?>login/ceklogin" method="POST">
+                    <form action="" method="POST">
                         <div class="form-group">
-                        <input type="text" class="form-control form-control-user" placeholder="Enter Username" name="username" required>
+                          <!-- <input type="text" class="form-control form-control-user" placeholder="Masukkan NIK" name="username" required> -->
+                          <?= form_input('username', set_value('username', ''), 'class="form-control form-control-user" placeholder="NIK" required');?>
                         </div>
-                        <div class="form-group">
-                        <input type="password" class="form-control form-control-user" placeholder="Password" name="password" required>
+                        <div class="input-group mb-3">
+                          <!-- <input type="password" class="form-control form-control-user" placeholder="Masukkan password" name="password" required> -->
+                          <?= form_password('password', set_value('password', ''), 'id="password" class="form-control form-control-user" placeholder="Password" required');?>
+                          <div class="input-group-append">
+                            <span class="input-group-text bg-light" id="hidePass"><div class="i fa fa-eye-slash"></div></span>
+                          </div>
+                          <div class="input-group-append">
+                            <span class="input-group-text bg-light" id="showPass"><div class="i fa fa-eye"></div></span>
+                          </div>
                         </div>
-                        <button type="submit" class="btn btn-primary btn-user btn-block">Login</button>
+                        <button type="submit" class="btn btn-primary btn-user btn-block"><i class="fa fa-sign-in-alt mr-1"></i> <b>Masuk</b></button>
                     </form>
                 </div>
               </div>
             </div>
           </div>
         </div>
-
       </div>
-
     </div>
-
   </div>
+  <script>
+    $("#hidePass").hide();
+    
+    $("#showPass").click(function(){
+      $("#password").prop('type', 'text');
+      $("#showPass").hide();
+      $("#hidePass").show()
+    })
+    
+    $("#hidePass").click(function(){
+      $("#password").prop('type', 'password');
+      $("#showPass").show();
+      $("#hidePass").hide()
+    })
+  </script>
