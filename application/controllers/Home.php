@@ -4,7 +4,7 @@ class Home extends CI_CONTROLLER{
         parent::__construct();
         $this->load->model('Civitas_model');
         $this->load->model('Main_model');
-        if($this->session->userdata('status') != "login" && !empty($this->session->userdata('id'))){
+        if($this->session->userdata('status') != "login" || empty($this->session->userdata('id'))){
             $this->session->set_flashdata('login', 'Maaf, Anda harus login terlebih dahulu');
 			redirect(base_url("login"));
 		}
@@ -18,8 +18,7 @@ class Home extends CI_CONTROLLER{
         
         $data['bulan'] = ["1" => "Januari", "2" => "Februari", "3" => "Maret", "4" => "April", "5" => "Mei", "6" => "Juni", "7" => "Juli", "8" => "Agustus", "9" => "September", "10" => "Oktober", "11" => "November", "12" => "Desember"];
         
-        // $data['kelas'] = COUNT($this->Civitas_model->get_all_kelas_kpq($nip));
-        $data['kelas'] = COUNT($this->Main_model->get_all("kelas", ["nip" => $nip]));
+        $data['kelas'] = COUNT($this->Main_model->get_all("kelas", ["nip" => $nip, "status" => "aktif"]));
         
         // sidebar
             $data['jml_wl'] = COUNT($this->Civitas_model->get_all_wl());

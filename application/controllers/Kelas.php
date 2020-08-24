@@ -5,7 +5,7 @@ class Kelas extends CI_CONTROLLER{
         parent::__construct();
         $this->load->model('Civitas_model');
         $this->load->model('Main_model');
-        if($this->session->userdata('status') != "login" && !empty($this->session->userdata('id'))){
+        if($this->session->userdata('status') != "login" || empty($this->session->userdata('id'))){
             $this->session->set_flashdata('login', 'Maaf, Anda harus login terlebih dahulu');
 			redirect(base_url("login"));
 		}
@@ -162,7 +162,8 @@ class Kelas extends CI_CONTROLLER{
         public function add_badal(){
             $tgl = $this->input->post("tgl");
             $id = $this->session->userdata("id");
-            $data = $this->Main_model->get_one("kbm", ["tgl" => $tgl, "nip" => $id]);
+            $id_jadwal = $this->input->post("id_jadwal");
+            $data = $this->Main_model->get_one("kbm", ["tgl" => $tgl, "nip" => $id, "id_jadwal" => $id_jadwal]);
             if($data){
                 $this->session->set_flashdata('pesan', '<div class="alert alert-danger alert-dismissible fade show" role="alert"><i class="fa fa-times-circle text-danger mr-1"></i> Gagal mengajukan badal, Anda telah melakukan KBM di tanggal yang Anda masukkan<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
             } else {
@@ -175,7 +176,8 @@ class Kelas extends CI_CONTROLLER{
         public function add_kbm(){
             $tgl = $this->input->post("tgl");
             $id = $this->session->userdata("id");
-            $data = $this->Main_model->get_one("kbm", ["tgl" => $tgl, "nip" => $id]);
+            $id_jadwal = $this->input->post("id_jadwal");
+            $data = $this->Main_model->get_one("kbm", ["tgl" => $tgl, "nip" => $id, "id_jadwal" => $id_jadwal]);
             if($data){
                 $this->session->set_flashdata('pesan', '<div class="alert alert-danger alert-dismissible fade show" role="alert"><i class="fa fa-times-circle text-danger mr-1"></i> Gagal menambahkan KBM, Anda telah melakukan KBM di tanggal yang Anda masukkan<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
             } else {

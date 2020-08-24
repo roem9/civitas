@@ -5,7 +5,7 @@ class Inbox extends CI_CONTROLLER{
         parent::__construct();
         $this->load->model('Civitas_model');
         $this->load->model('Main_model');
-        if($this->session->userdata('status') != "login" && !empty($this->session->userdata('id'))){
+        if($this->session->userdata('status') != "login" || empty($this->session->userdata('id'))){
             $this->session->set_flashdata('login', 'Maaf, Anda harus login terlebih dahulu');
 			redirect(base_url("login"));
 		}
