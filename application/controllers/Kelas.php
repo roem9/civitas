@@ -643,7 +643,7 @@ class Kelas extends CI_CONTROLLER{
 
     // get
         public function get_peserta_aktif(){
-            $id = $this->input->post("id");
+            $id = $this->input->post("nip");
             if($this->input->post("tipe")){
                 $tipe = $this->input->post("tipe");
             } else {
@@ -665,7 +665,7 @@ class Kelas extends CI_CONTROLLER{
         }
         
         public function get_peserta_pembinaan_aktif(){
-            $id = $this->input->post("id");
+            $id = $this->input->post("nip");
             $kpq = $this->Main_model->get_all("kelas_kpq", ["id_kelas" => $id]);
             $data = [];
             foreach ($kpq as $i => $kpq) {
@@ -681,7 +681,7 @@ class Kelas extends CI_CONTROLLER{
         }
 
         public function get_detail_kbm(){
-            $id = $this->input->post("id");
+            $id = $this->input->post("nip");
 
             $data = $this->Civitas_model->get_detail_kbm($id);
             echo json_encode($data);
@@ -689,7 +689,7 @@ class Kelas extends CI_CONTROLLER{
 
         // public function get_detail_kbm_pembinaan(){
         //     $data = [];
-        //     $id = $this->input->post("id");
+        //     $id = $this->input->post("nip");
         //     $bulan = date("m");
         //     $tahun = date("Y");
             
@@ -711,7 +711,7 @@ class Kelas extends CI_CONTROLLER{
         // }
 
         public function get_catatan_badal(){
-            $id = $this->input->post("id");
+            $id = $this->input->post("nip");
             $tipe = $this->input->post("tipe");
 
             if($tipe == "kelas"){
@@ -724,7 +724,7 @@ class Kelas extends CI_CONTROLLER{
         }
 
         public function get_catatan_kelas(){
-            $id = $this->input->post("id");
+            $id = $this->input->post("nip");
 
             $data = $this->Civitas_model->get_catatan_kelas($id);
             echo json_encode($data);

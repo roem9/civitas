@@ -110,13 +110,13 @@ class Home extends CI_CONTROLLER{
 
     // get
         public function get_detail_golongan(){
-            $id = $this->input->post("id");
+            $id = $this->input->post("nip");
             $data = $this->Civitas_model->get_detail_golongan($id);
             echo json_encode($data);
         }
 
         public function get_detail_ot(){
-            $id = $this->input->post("id");
+            $id = $this->input->post("nip");
             $data = $this->Civitas_model->get_detail_ot($id);
 
             $data = $data['detail'];
@@ -130,94 +130,98 @@ class Home extends CI_CONTROLLER{
 
     // other function
         public function ot($gol, $kbm, $oot){
-            if($gol != 'E'){
-                if($oot == '3'){
-                    if($kbm == '5'){
-                        return $ot = 62500;
-                    } else if($kbm == '4'){
-                        return $ot = 50000;
-                    } else if($kbm == '3'){
-                        return $ot = 37500;
-                    } else if($kbm == '2'){
-                        return $ot = 25000;
-                    } else if($kbm == '1'){
-                        return $ot = 12500;
-                    } else {
-                        return $ot = 0;
-                    }
-                } else if($oot == '2'){
-                    if($kbm == '5'){
-                        return $ot = 42000;
-                    } else if($kbm == '4'){
-                        return $ot = 33500;
-                    } else if($kbm == '3'){
-                        return $ot = 25000;
-                    } else if($kbm == '2'){
-                        return $ot = 17000;
-                    } else if($kbm == '1'){
-                        return $ot = 8500;
-                    } else {
-                        return $ot = 0;
-                    }
-                } else if($oot == '1'){
-                    if($kbm == '5'){
-                        return $ot = 21000;
-                    } else if($kbm == '4'){
-                        return $ot = 17000;
-                    } else if($kbm == '3'){
-                        return $ot = 12500;
-                    } else if($kbm == '2'){
-                        return $ot = 8500;
-                    } else if($kbm == '1'){
-                        return $ot = 4500;
-                    } else {
-                        return $ot = 0;
-                    }
-                } 
+            if($kbm == 0){
+                return $ot = 0;
             } else {
-                if($oot == '3'){
-                    if($kbm == '5'){
-                        return $ot = 262500;
-                    } else if($kbm == '4'){
-                        return $ot = 210000;
-                    } else if($kbm == '3'){
-                        return $ot = 157500;
-                    } else if($kbm == '2'){
-                        return $ot = 105000;
-                    } else if($kbm == '1'){
-                        return $ot = 52500;
-                    } else {
-                        return $ot = 0;
-                    }
-                } else if($oot == '2'){
-                    if($kbm == '5'){
-                        return $ot = 175000;
-                    } else if($kbm == '4'){
-                        return $ot = 140000;
-                    } else if($kbm == '3'){
-                        return $ot = 105000;
-                    } else if($kbm == '2'){
-                        return $ot = 70000;
-                    } else if($kbm == '1'){
-                        return $ot = 35000;
-                    } else {
-                        return $ot = 0;
-                    }
-                } else if($oot == '1'){
-                    if($kbm == '5'){
-                        return $ot = 87500;
-                    } else if($kbm == '4'){
-                        return $ot = 70000;
-                    } else if($kbm == '3'){
-                        return $ot = 52500;
-                    } else if($kbm == '2'){
-                        return $ot = 35000;
-                    } else if($kbm == '1'){
-                        return $ot = 17500;
-                    } else {
-                        return $ot = 0;
-                    }
-                } 
+                if($gol != 'E'){
+                    if($oot == '3'){
+                        if($kbm == '5'){
+                            return $ot = 62500;
+                        } else if($kbm == '4'){
+                            return $ot = 50000;
+                        } else if($kbm == '3'){
+                            return $ot = 37500;
+                        } else if($kbm == '2'){
+                            return $ot = 25000;
+                        } else if($kbm == '1'){
+                            return $ot = 12500;
+                        } else {
+                            return $ot = 0;
+                        }
+                    } else if($oot == '2'){
+                        if($kbm == '5'){
+                            return $ot = 42000;
+                        } else if($kbm == '4'){
+                            return $ot = 33500;
+                        } else if($kbm == '3'){
+                            return $ot = 25000;
+                        } else if($kbm == '2'){
+                            return $ot = 17000;
+                        } else if($kbm == '1'){
+                            return $ot = 8500;
+                        } else {
+                            return $ot = 0;
+                        }
+                    } else if($oot == '1'){
+                        if($kbm == '5'){
+                            return $ot = 21000;
+                        } else if($kbm == '4'){
+                            return $ot = 17000;
+                        } else if($kbm == '3'){
+                            return $ot = 12500;
+                        } else if($kbm == '2'){
+                            return $ot = 8500;
+                        } else if($kbm == '1'){
+                            return $ot = 4500;
+                        } else {
+                            return $ot = 0;
+                        }
+                    } 
+                } else {
+                    if($oot == '3'){
+                        if($kbm == '5'){
+                            return $ot = 262500;
+                        } else if($kbm == '4'){
+                            return $ot = 210000;
+                        } else if($kbm == '3'){
+                            return $ot = 157500;
+                        } else if($kbm == '2'){
+                            return $ot = 105000;
+                        } else if($kbm == '1'){
+                            return $ot = 52500;
+                        } else {
+                            return $ot = 0;
+                        }
+                    } else if($oot == '2'){
+                        if($kbm == '5'){
+                            return $ot = 175000;
+                        } else if($kbm == '4'){
+                            return $ot = 140000;
+                        } else if($kbm == '3'){
+                            return $ot = 105000;
+                        } else if($kbm == '2'){
+                            return $ot = 70000;
+                        } else if($kbm == '1'){
+                            return $ot = 35000;
+                        } else {
+                            return $ot = 0;
+                        }
+                    } else if($oot == '1'){
+                        if($kbm == '5'){
+                            return $ot = 87500;
+                        } else if($kbm == '4'){
+                            return $ot = 70000;
+                        } else if($kbm == '3'){
+                            return $ot = 52500;
+                        } else if($kbm == '2'){
+                            return $ot = 35000;
+                        } else if($kbm == '1'){
+                            return $ot = 17500;
+                        } else {
+                            return $ot = 0;
+                        }
+                    } 
+                }
             }
         }
     // other function

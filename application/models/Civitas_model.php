@@ -547,7 +547,7 @@ class Civitas_model extends CI_Model{
     // edit
         // hapus?
         public function edit_program(){
-            $id = $this->input->post("id");
+            $id = $this->input->post("nip");
             $program = $this->input->post("program");
             $this->db->where("id_kelas", $id);
             $this->db->update("kelas", ["program" => $program]);
