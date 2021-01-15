@@ -113,13 +113,13 @@
                         <li class="list-group-item list-group-item-info d-flex justify-content-between"><span><i class="fa fa-clock mr-2 text-dark"></i> KBM <?= $bulan[date("n")] . " " . date("Y")?></span></li>
                         <li class="list-group-item d-flex justify-content-between">Kelas <span><?= $kelas?></span></li>
                         <li class="list-group-item d-flex justify-content-between">
-                            KBM <span><?= COUNT($kbm)?></span>
+                            KBM <span><?= $kbm?></span>
                         </li>
                         <li class="list-group-item d-flex justify-content-between">
-                            Badal <span><?= COUNT($badal)?></span>
+                            Badal <span><?= $badal?></span>
                         </li>
                         <li class="list-group-item list-group-item-danger d-flex justify-content-between">
-                            Dibadal <span><?= COUNT($dibadal)?></span>
+                            Dibadal <span><?= $dibadal?></span>
                         </li>
                     </ul>
                 </div>

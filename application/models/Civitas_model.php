@@ -1,6 +1,11 @@
 <?php
 
-class Civitas_model extends CI_Model{
+class Civitas_model extends CI_Model{    
+    public function __construct(){
+        parent::__construct();
+        $this->load->model('Main_model');
+    }
+
     // hapus?
     public function get_data_kpq($nip){
         $this->db->from("kpq");
@@ -189,6 +194,18 @@ class Civitas_model extends CI_Model{
         $this->db->where("YEAR(tgl)", $tahun);
         return $this->db->get()->result_array();
     }
+    
+    public function get_kbm_pm_now($nip){
+        $bulan = date("m");
+        $tahun = date("Y");
+        $this->db->from("kbm_pembinaan");
+        $where = "id_kbm NOT IN(SELECT id_kbm FROM kbm_badal_pembinaan)";
+        $this->db->where($where);
+        $this->db->where("nip", $nip);
+        $this->db->where("MONTH(tgl)", $bulan);
+        $this->db->where("YEAR(tgl)", $tahun);
+        return $this->db->get()->result_array();
+    }
 
     public function get_kbm_by_id_jadwal($id){
         $bulan = date("m");
@@ -211,11 +228,33 @@ class Civitas_model extends CI_Model{
         return $this->db->get()->result_array();
     }
 
+    public function get_badal_pm_now($nip){
+        $bulan = date("m");
+        $tahun = date("Y");
+        $this->db->from("kbm_pembinaan as a");
+        $this->db->join("kbm_badal_pembinaan as b", "a.id_kbm = b.id_kbm");
+        $this->db->where("nip_badal", $nip);
+        $this->db->where("MONTH(tgl)", $bulan);
+        $this->db->where("YEAR(tgl)", $tahun);
+        return $this->db->get()->result_array();
+    }
+
     public function get_dibadal_now($nip){
         $bulan = date("m");
         $tahun = date("Y");
         $this->db->from("kbm as a");
         $this->db->join("kbm_badal as b", "a.id_kbm = b.id_kbm");
+        $this->db->where("nip", $nip);
+        $this->db->where("MONTH(tgl)", $bulan);
+        $this->db->where("YEAR(tgl)", $tahun);
+        return $this->db->get()->result_array();
+    }
+    
+    public function get_dibadal_pm_now($nip){
+        $bulan = date("m");
+        $tahun = date("Y");
+        $this->db->from("kbm_pembinaan as a");
+        $this->db->join("kbm_badal_pembinaan as b", "a.id_kbm = b.id_kbm");
         $this->db->where("nip", $nip);
         $this->db->where("MONTH(tgl)", $bulan);
         $this->db->where("YEAR(tgl)", $tahun);
@@ -350,6 +389,52 @@ class Civitas_model extends CI_Model{
             $this->db->select("nama_peserta");
             $this->db->from("peserta as a");
             $this->db->join("presensi_peserta as b", "a.id_peserta = b.id_peserta");
+            $this->db->where("id_kbm", $kbm['id_kbm']);
+            $this->db->where("hadir", 0);
+            $peserta = $this->db->get()->result_array();
+            $data[$i]['peserta_tidak_hadir'] = $peserta;
+        }
+
+        // ini_set('xdebug.var_display_max_depth', '10');
+        // ini_set('xdebug.var_display_max_children', '256');
+        // ini_set('xdebug.var_display_max_data', '1024');
+
+        // var_dump($data);
+        
+        usort($data, function($a, $b) {
+            return $a['kbm']['tgl'] <=> $b['kbm']['tgl'];
+        });
+
+        return $data;
+    }
+    
+    public function get_detail_kbm_pembinaan($id){
+        $data = [];
+        $bulan = date("m");
+        $tahun = date("Y");
+
+        $this->db->select("a.id_kbm, tgl, hari, jam, jum_peserta, nip_badal, nama_kpq");
+        $this->db->from("kbm_pembinaan as a");
+        $this->db->join("kbm_badal_pembinaan as b", "a.id_kbm = b.id_kbm", "left");
+        $this->db->join("kpq as c", "b.nip_badal = c.nip", "left");
+        $this->db->where("id_kelas", $id);
+        $this->db->where("MONTH(tgl)", $bulan);
+        $this->db->where("YEAR(tgl)", $tahun);
+
+        $kbm = $this->db->get()->result_array();
+        foreach ($kbm as $i => $kbm) {
+            $this->db->select("nama_kpq");
+            $this->db->from("kpq as a");
+            $this->db->join("presensi_kpq as b", "a.nip = b.nip");
+            $this->db->where("id_kbm", $kbm['id_kbm']);
+            $this->db->where("hadir", 1);
+            $peserta = $this->db->get()->result_array();
+            $data[$i]['kbm'] = $kbm;
+            $data[$i]['peserta_hadir'] = $peserta;
+
+            $this->db->select("nama_kpq");
+            $this->db->from("kpq as a");
+            $this->db->join("presensi_kpq as b", "a.kpq = b.kpq");
             $this->db->where("id_kbm", $kbm['id_kbm']);
             $this->db->where("hadir", 0);
             $peserta = $this->db->get()->result_array();
@@ -646,6 +731,93 @@ class Civitas_model extends CI_Model{
                 ];
 
                 $this->db->insert("presensi_peserta", $data);
+            }
+        }
+
+        
+        public function add_kbm_pembinaan(){
+            $gol = $this->get_data_kpq($this->session->userdata("id"));
+            $day = array(
+                'Sunday' => 'Ahad',
+                'Monday' => 'Senin',
+                'Tuesday' => 'Selasa',
+                'Wednesday' => 'Rabu',
+                'Thursday' => 'Kamis',
+                'Friday' => 'Jumat',
+                'Saturday' => 'Sabtu'
+            );
+
+            
+                // kbm terakhir
+            $this->db->select("id_kbm");
+            $this->db->from("kbm_pembinaan");
+            $this->db->order_by("id_kbm", "desc");
+            $id = $this->db->get()->row_array();
+            $id = $id['id_kbm'] + 1;
+            
+
+            //jadwal
+            $data = $this->Main_model->get_one("kelas_pembinaan", ["id_kelas" => $this->input->post("id_kelas")]);
+            $hari = $data['hari'];
+            $jam = $data['jam'];
+            // $this->db->from("jadwal");
+            // $this->db->where("id_jadwal", $this->input->post("id_jadwal"));
+            // $jadwal = $this->db->get()->row_array();
+            // $hari = $jadwal['hari'];
+            // $jam = $jadwal['jam'];
+
+            // biaya
+            // $this->db->from("kelas");
+            // $this->db->where("id_kelas", $this->input->post("id_kelas"));
+            // $kelas = $this->db->get()->row_array();
+
+            $this->db->from("golongan");
+            $this->db->where("gol", $gol['golongan']);
+            $this->db->where("tipe_kelas", "reguler");
+            $gol = $this->db->get()->row_array();
+
+            // $keterangan = $this->input->post("keterangan");
+            // if($keterangan == "sesuai"){
+            //     $peserta = $this->input->post("peserta_sesuai");
+            // } else {
+            //     $peserta = $this->input->post("peserta_ganti");
+            //     $hari = $day[date('l', strtotime($this->input->post("tgl")))];
+            //     $jam = $this->input->post("jam");
+            // }
+
+            // $presensi = $this;
+            $jum_peserta = COUNT($this->Main_model->get_all("kelas_kpq", ["id_kelas" => $data['id_kelas']]));
+
+            $kbm = [
+                "id_kbm" => $id,
+                "tgl" => $this->input->post("tgl"),
+                "hari" => $hari,
+                "jam" => $jam,
+                "keterangan" => "sesuai",
+                "id_kelas" => $this->input->post("id_kelas"),
+                "nip" => $this->session->userdata("id"),
+                "biaya" => $gol['honor'],
+                "ot" => 0,
+                "program_kbm" => $data['program'],
+                "jum_peserta" => $jum_peserta,
+                "peserta" => "LKP TAR-Q"
+            ];
+
+            $this->db->insert("kbm_pembinaan", $kbm);
+            
+            $peserta = $this->Main_model->get_all("kelas_kpq", ["id_kelas" => $data['id_kelas']]);
+            foreach ($peserta as $nip) {
+                if(in_array($nip['nip'], $this->input->post("kpq")))
+                    $hadir = 1;
+                else
+                    $hadir = 0;
+
+                $data = [
+                    "id_kbm" => $id,
+                    "nip" => $nip['nip'],
+                    "hadir" => $hadir
+                ];
+                $this->db->insert("presensi_kpq", $data);
             }
         }
 

@@ -5,9 +5,12 @@ class Main_model extends CI_MODEL{
         return $this->db->insert_id();
     }
 
-    public function get_one($table, $where){
+    public function get_one($table, $where = "", $order = "", $by = "ASC"){
         $this->db->from($table);
-        $this->db->where($where);
+        if($where)
+            $this->db->where($where);
+        if($order)
+            $this->db->order_by($order, $by);
         return $this->db->get()->row_array();
     }
 

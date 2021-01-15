@@ -45,13 +45,13 @@
         <nav id="sidebar">
           <div class="list-group list-group-flush">
             <a href="<?= base_url()?>" class="list-group-item list-group-item-action" id="beranda"><i class="fa fa-home mr-1"></i>Beranda</a>
-            <a href="<?= base_url()?>inbox" class="list-group-item list-group-item-action d-flex justify-content-between" id="inbox">
-              <?php if($jml_inbox == 0):?>
-                <span><i class="fa fa-inbox mr-1"></i>Inbox</span>
-              <?php else :?>
-                <span><i class="fa fa-inbox mr-1"></i>Inbox</span> <span class="badge badge-danger"><?= $jml_inbox?></span>
-              <?php endif;?>
-            </a>
+            <!-- <a href="<?= base_url()?>inbox" class="list-group-item list-group-item-action d-flex justify-content-between" id="inbox"> -->
+              <!-- <?php if($jml_inbox == 0):?> -->
+                <!-- <span><i class="fa fa-inbox mr-1"></i>Inbox</span> -->
+              <!-- <?php else :?> -->
+                <!-- <span><i class="fa fa-inbox mr-1"></i>Inbox</span> <span class="badge badge-danger"><?= $jml_inbox?></span> -->
+              <!-- <?php endif;?> -->
+            <!-- </a> -->
             <a class="list-group-item list-group-item-action d-flex justify-content-between" id="kelasku"><span><i class="fa fa-clock mr-1"></i>Jadwal KBM</span> <span class="badge badge-danger"><?= $jml_kelas?></span></a>
             <div class="hari">
               <a href="<?= base_url()?>kelas" class="list-group-item list-group-item-action d-flex justify-content-between"><span class="ml-4">Semua Hari</span> <span class="badge badge-danger"><?= $jml_kelas?></span></a>

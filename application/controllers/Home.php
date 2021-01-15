@@ -18,25 +18,34 @@ class Home extends CI_CONTROLLER{
         
         $data['bulan'] = ["1" => "Januari", "2" => "Februari", "3" => "Maret", "4" => "April", "5" => "Mei", "6" => "Juni", "7" => "Juli", "8" => "Agustus", "9" => "September", "10" => "Oktober", "11" => "November", "12" => "Desember"];
         
-        $data['kelas'] = COUNT($this->Main_model->get_all("kelas", ["nip" => $nip, "status" => "aktif"]));
+        $data['kelas'] = COUNT($this->Main_model->get_all("kelas", ["nip" => $nip, "status" => "aktif"])) + COUNT($this->Main_model->get_all("kelas_pembinaan", ["nip" => $nip, "status" => "aktif"]));
         
+        // kbm pembinaan badal 
+            $badal = 0;
+            $kbm = $this->Main_model->get_all("kbm_pembinaan", ["MONTH(tgl)" => date('m'), "YEAR(tgl)" => date('Y')]);
+            foreach ($kbm as $kbm) {
+                $cek = $this->Main_model->get_one("kbm_badal_pembinaan", ["id_kbm" => $kbm['id_kbm'], "rekap" => 0]);
+                if($cek) $badal++;
+            }
+        // kbm pembinaan badal 
+
         // sidebar
             $data['jml_wl'] = COUNT($this->Civitas_model->get_all_wl());
-            $data['jml_kelas'] = COUNT($this->Civitas_model->get_all_jadwal_kpq($nip));
-            // $data['jml_inbox'] = COUNT($this->Civitas_model->get_all_inbox_off($nip));
-            $data['jml_inbox'] = COUNT($this->Main_model->get_all("inbox", ["nip" => $nip, "status" => "off"]));
-            $data['jml_badal'] = COUNT($this->Civitas_model->get_all_jadwal_badal_kpq($nip));
+            $data['kpq'] = $this->Civitas_model->get_all_kpq();
+            $data['program'] = $this->Civitas_model->get_all_program();
+            $data['jml_inbox'] = COUNT($this->Civitas_model->get_all_inbox_off($nip));
+            $data['jml_badal'] = COUNT($this->Civitas_model->get_all_jadwal_badal_kpq($nip)) + $badal;
+            $data['jml_kelas'] = COUNT($this->Civitas_model->get_all_jadwal_kpq($nip)) + COUNT($this->Main_model->get_all("kelas_pembinaan", ["nip" => $nip, "status" => "aktif"]));
+            $data['jml'] = [
+                "senin" => COUNT($this->Civitas_model->get_jadwal_hari_kpq($nip, 'senin')) + COUNT($this->Main_model->get_all("kelas_pembinaan", ["nip" => $nip, "status" => "aktif", "hari" => "senin"])),
+                "selasa" => COUNT($this->Civitas_model->get_jadwal_hari_kpq($nip, 'selasa')) + COUNT($this->Main_model->get_all("kelas_pembinaan", ["nip" => $nip, "status" => "aktif", "hari" => "selasa"])),
+                "rabu" => COUNT($this->Civitas_model->get_jadwal_hari_kpq($nip, 'rabu')) + COUNT($this->Main_model->get_all("kelas_pembinaan", ["nip" => $nip, "status" => "aktif", "hari" => "rabu"])),
+                "kamis" => COUNT($this->Civitas_model->get_jadwal_hari_kpq($nip, 'kamis')) + COUNT($this->Main_model->get_all("kelas_pembinaan", ["nip" => $nip, "status" => "aktif", "hari" => "kamis"])),
+                "jumat" => COUNT($this->Civitas_model->get_jadwal_hari_kpq($nip, 'jumat')) + COUNT($this->Main_model->get_all("kelas_pembinaan", ["nip" => $nip, "status" => "aktif", "hari" => "jumat"])),
+                "sabtu" => COUNT($this->Civitas_model->get_jadwal_hari_kpq($nip, 'sabtu')) + COUNT($this->Main_model->get_all("kelas_pembinaan", ["nip" => $nip, "status" => "aktif", "hari" => "sabtu"])),
+                "ahad" => COUNT($this->Civitas_model->get_jadwal_hari_kpq($nip, 'ahad')) + COUNT($this->Main_model->get_all("kelas_pembinaan", ["nip" => $nip, "status" => "aktif", "hari" => "ahad"]))
+            ];
         // sidebar
-        
-        $data['jml'] = [
-            "senin" => COUNT($this->Civitas_model->get_jadwal_hari_kpq($nip, 'senin')),
-            "selasa" => COUNT($this->Civitas_model->get_jadwal_hari_kpq($nip, 'selasa')),
-            "rabu" => COUNT($this->Civitas_model->get_jadwal_hari_kpq($nip, 'rabu')),
-            "kamis" => COUNT($this->Civitas_model->get_jadwal_hari_kpq($nip, 'kamis')),
-            "jumat" => COUNT($this->Civitas_model->get_jadwal_hari_kpq($nip, 'jumat')),
-            "sabtu" => COUNT($this->Civitas_model->get_jadwal_hari_kpq($nip, 'sabtu')),
-            "ahad" => COUNT($this->Civitas_model->get_jadwal_hari_kpq($nip, 'ahad'))
-        ];
 
         // hitung ot
             $data['ot'] = 0;
@@ -56,23 +65,42 @@ class Home extends CI_CONTROLLER{
             // badal
         // 
 
-        $data['kpq'] = $this->Civitas_model->get_data_kpq($nip);
-        $data['kbm'] = $this->Civitas_model->get_kbm_now($nip);
-        $data['badal'] = $this->Civitas_model->get_badal_now($nip);
-        $data['dibadal'] = $this->Civitas_model->get_dibadal_now($nip);
         $data['honor_badal'] = 0;
         $data['honor_kbm'] = 0;
-        
-        foreach ($data['kbm'] as $kbm) {
+
+        $kbm_kelas = $this->Civitas_model->get_kbm_now($nip);
+        $kbm_pm = $this->Civitas_model->get_kbm_pm_now($nip);
+        foreach ($kbm_kelas as $kbm) {
             $data['honor_kbm'] += $kbm['biaya'];
             // $data['honor_kbm'] += $kbm['ot'];
         }
         
-        foreach ($data['badal'] as $kbm) {
+        foreach ($kbm_pm as $kbm) {
+            $data['honor_kbm'] += $kbm['biaya'];
+            // $data['honor_kbm'] += $kbm['ot'];
+        }
+
+        $badal_kelas = $this->Civitas_model->get_badal_now($nip);
+        $badal_pm = $this->Civitas_model->get_badal_pm_now($nip);
+
+        foreach ($badal_kelas as $kbm) {
+            $data['honor_badal'] += $kbm['biaya'];
+            // $data['honor_badal'] += $kbm['ot'];
+        }
+        
+        foreach ($badal_pm as $kbm) {
             $data['honor_badal'] += $kbm['biaya'];
             // $data['honor_badal'] += $kbm['ot'];
         }
 
+        $dibadal_kelas = $this->Civitas_model->get_dibadal_now($nip);
+        $dibadal_pm = $this->Civitas_model->get_dibadal_pm_now($nip);
+
+        $data['dibadal'] = COUNT($dibadal_kelas) + COUNT($dibadal_pm);
+        $data['kbm'] = COUNT($kbm_kelas) + COUNT($kbm_pm);
+        $data['badal'] = COUNT($badal_kelas) + COUNT($badal_pm);
+        $data['kpq'] = $this->Civitas_model->get_data_kpq($nip);
+        
         $data['title'] = "Beranda";
         $this->load->view("templates/header", $data);
         $this->load->view("page/beranda", $data);

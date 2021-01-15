@@ -395,8 +395,14 @@
                                 <li class="list-group-item"><i class="fa fa-book mr-2"></i><?= $kelas['program']?></li>
                                 <li class="list-group-item"><i class="fa fa-user-circle mr-2"></i>LKP TAR-Q</li>
                                 <li class="list-group-item"><i class="fa fa-map-marker-alt mr-2"></i><?= ucwords(strtolower($kelas['tempat']))?></li>
-                                <li class="list-group-item d-flex justify-content-end">
-                                    <a href="<?= base_url()?>/kelas/pembinaan/<?= md5($kelas['id_kelas'])?>" class="btn btn-sm btn-primary">masuk kelas</a>
+                                <li class="list-group-item d-flex justify-content-between">
+                                    <span>
+                                        <?php if($kelas['kbm'] < 5):?>
+                                            <a href="#modalPembinaan" data-id="<?= $kelas['id_kelas']?>|<?= $kelas['hari'] . " " . $kelas['jam']?>" data-toggle="modal" class="btn btn-sm btn-primary modal-pembinaan"><i class="fa fa-user-check"></i></a>
+                                            <a href="#modalBadalPembinaan" data-id="<?= $kelas['id_kelas']?>" data-toggle="modal" class="btn btn-sm btn-danger modal-badal-pembinaan"><i class="fa fa-exchange-alt"></i></a>
+                                        <?php endif;?>
+                                        <a href="#modalKbm" data-id="<?= $kelas['id_kelas']?>" data-toggle="modal" class="btn btn-sm btn-success modal-kbm-pembinaan"><i class="fa fa-list-ol"></i> <span class="badge badge-danger cek"><?= $kelas['kbm']?></span></a>
+                                    </span>
                                 </li>
                             </ul>
                         </div>
