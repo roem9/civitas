@@ -4,14 +4,14 @@ class Home extends CI_CONTROLLER{
         parent::__construct();
         $this->load->model('Civitas_model');
         $this->load->model('Main_model');
-        if($this->session->userdata('status') != "login" || empty($this->session->userdata('id'))){
+        if(!$this->session->userdata('nip')){
             $this->session->set_flashdata('login', 'Maaf, Anda harus login terlebih dahulu');
-			redirect(base_url("login"));
+			redirect(base_url("auth"));
 		}
     }
 
     public function index(){
-        $nip = $this->session->userdata('id');
+        $nip = $this->session->userdata('nip');
         $kpq = $this->Main_model->get_one("kpq", ["nip" => $nip]);
         // $gol = $this->session->userdata('gol');
         $gol = $kpq['golongan'];

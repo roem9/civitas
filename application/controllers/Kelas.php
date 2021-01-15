@@ -5,15 +5,15 @@ class Kelas extends CI_CONTROLLER{
         parent::__construct();
         $this->load->model('Civitas_model');
         $this->load->model('Main_model');
-        if($this->session->userdata('status') != "login" || empty($this->session->userdata('id'))){
+        if(!$this->session->userdata('nip')){
             $this->session->set_flashdata('login', 'Maaf, Anda harus login terlebih dahulu');
-			redirect(base_url("login"));
+			redirect(base_url("auth"));
 		}
     }
 
     public function index(){
         $data['title'] = "Jadwal KBM Semua Hari";
-        $nip = $this->session->userdata("id");
+        $nip = $this->session->userdata('nip');
 
         // kbm pembinaan badal 
             $badal = 0;
@@ -65,7 +65,7 @@ class Kelas extends CI_CONTROLLER{
 
     public function hari($hari){
         $data['title'] = "Jadwal KBM " . ucwords($hari);
-        $nip = $this->session->userdata("id");
+        $nip = $this->session->userdata('nip');
         
         $data['program'] = $this->Civitas_model->get_all_program();
         // kbm pembinaan badal 
@@ -113,7 +113,7 @@ class Kelas extends CI_CONTROLLER{
 
     public function badal(){
         $data['title'] = "Jadwal Badal";
-        $nip = $this->session->userdata("id");
+        $nip = $this->session->userdata('nip');
         
         // kbm pembinaan badal 
             $data['pembinaan'] = [];
@@ -159,14 +159,20 @@ class Kelas extends CI_CONTROLLER{
 
     public function wl(){
         $data['title'] = "Waiting List";
-        $nip = $this->session->userdata("id");
+        $nip = $this->session->userdata('nip');
         
         // kbm pembinaan badal 
+            $data['pembinaan'] = [];
             $badal = 0;
             $kbm = $this->Main_model->get_all("kbm_pembinaan", ["MONTH(tgl)" => date('m'), "YEAR(tgl)" => date('Y')]);
             foreach ($kbm as $kbm) {
-                $cek = $this->Main_model->get_one("kbm_badal_pembinaan", ["id_kbm" => $kbm['id_kbm']]);
-                if($cek) $badal++;
+                $cek = $this->Main_model->get_one("kbm_badal_pembinaan", ["id_kbm" => $kbm['id_kbm'], "rekap" => 0, "nip_badal" => $nip]);
+                if($cek) {
+                    $data['pembinaan'][$badal] = $kbm;
+                    $kpq = $this->Main_model->get_one("kpq", ["nip" => $kbm['nip']]);
+                    $data['pembinaan'][$badal]['nama_kpq'] = $kpq['nama_kpq'];
+                    $badal++;
+                }
             }
         // kbm pembinaan badal 
 
@@ -212,7 +218,7 @@ class Kelas extends CI_CONTROLLER{
 
     public function pembinaan($id){
         $data['title'] = "Kelas Pembinaan";
-        $nip = $this->session->userdata("id");
+        $nip = $this->session->userdata('nip');
 
         // kbm pembinaan badal 
             $badal = 0;
@@ -305,7 +311,7 @@ class Kelas extends CI_CONTROLLER{
     // add
         public function add_badal(){
             $tgl = $this->input->post("tgl");
-            $id = $this->session->userdata("id");
+            $id = $this->session->userdata('nip');
             $id_jadwal = $this->input->post("id_jadwal");
             $data = $this->Main_model->get_one("kbm", ["tgl" => $tgl, "nip" => $id, "id_jadwal" => $id_jadwal]);
             if($data){
@@ -319,7 +325,7 @@ class Kelas extends CI_CONTROLLER{
 
         public function add_kbm(){
             $tgl = $this->input->post("tgl");
-            $id = $this->session->userdata("id");
+            $id = $this->session->userdata('nip');
             $id_jadwal = $this->input->post("id_jadwal");
             $data = $this->Main_model->get_one("kbm", ["tgl" => $tgl, "nip" => $id, "id_jadwal" => $id_jadwal]);
             if($data){
@@ -337,7 +343,7 @@ class Kelas extends CI_CONTROLLER{
         
         // public function add_kbm_pembinaan(){
         //     $tgl = $this->input->post("tgl");
-        //     $id = $this->session->userdata("id");
+        //     $id = $this->session->userdata('nip');
         //     $id_kelas = $this->input->post("id_kelas");
         //     $data = $this->Main_model->get_one("kbm_pembinaan", ["tgl" => $tgl, "id_kelas" => $id_kelas]);
         //     if($data){
@@ -357,7 +363,7 @@ class Kelas extends CI_CONTROLLER{
             $tgl = $this->input->post("tgl");
             if(date("mY", strtotime($tgl)) == date("mY")){
 
-                $nip = $this->session->userdata("id");
+                $nip = $this->session->userdata('nip');
                 $kpq = $this->Main_model->get_one("kpq", ["nip" => $nip]);
                 $day = array('Sunday' => 'Ahad','Monday' => 'Senin','Tuesday' => 'Selasa','Wednesday' => 'Rabu','Thursday' => 'Kamis','Friday' => 'Jumat','Saturday' => 'Sabtu');
     
@@ -383,7 +389,7 @@ class Kelas extends CI_CONTROLLER{
                     "jam" => $jam,
                     "keterangan" => "sesuai",
                     "id_kelas" => $this->input->post("id_kelas"),
-                    "nip" => $this->session->userdata("id"),
+                    "nip" => $this->session->userdata("nip"),
                     "biaya" => $gol['honor'],
                     "ot" => 0,
                     "program_kbm" => $data['program'],
@@ -430,7 +436,7 @@ class Kelas extends CI_CONTROLLER{
             $tgl = $this->input->post("tgl");
             $nip_badal = $this->input->post("nip");
             
-            $id = $this->session->userdata("id");
+            $id = $this->session->userdata('nip');
 
             $hari = array('Sunday' => 'Ahad','Monday' => 'Senin','Tuesday' => 'Selasa','Wednesday' => 'Rabu','Thursday' => 'Kamis','Friday' => 'Jumat','Saturday' => 'Sabtu');
 
@@ -492,7 +498,7 @@ class Kelas extends CI_CONTROLLER{
 
         public function rekap_badal_pembinaan(){
             // var_dump($_POST);
-            $nip = $this->session->userdata("id");
+            $nip = $this->session->userdata('nip');
             $id_kelas = $this->input->post("id_kelas");
             $id_kbm = $this->input->post("id_kbm");
             $materi = $this->input->post("materi");
@@ -540,16 +546,19 @@ class Kelas extends CI_CONTROLLER{
                     $this->db->insert("presensi_kpq", $data);
                 }
             // biaya 
+            
+            $this->session->set_flashdata('pesan', '<div class="alert alert-success alert-dismissible fade show" role="alert"><i class="fa fa-check-circle text-success mr-1"></i> Berhasil merekap badal<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
+            redirect($_SERVER['HTTP_REFERER']);
         }
 
         public function rekap_badal(){
-            $nip = $this->session->userdata("id");
+            $nip = $this->session->userdata('nip');
             $tipe = $this->input->post("tipe");
             $id_kelas = $this->input->post("id_kelas");
             $id_kbm = $this->input->post("id_kbm");
             $peserta = $this->input->post("peserta");
             
-            // $gol = $this->get_data_kpq($this->session->userdata("id"));
+            // $gol = $this->get_data_kpq($this->session->userdata("nip"));
             $kpq = $this->Main_model->get_one("kpq", ["nip" => $nip]);
 
             // biaya
@@ -635,7 +644,11 @@ class Kelas extends CI_CONTROLLER{
     // get
         public function get_peserta_aktif(){
             $id = $this->input->post("id");
-            $tipe = $this->input->post("tipe");
+            if($this->input->post("tipe")){
+                $tipe = $this->input->post("tipe");
+            } else {
+                $tipe = "kelas";
+            }
             
             if($tipe == "kelas"){
                 $data = $this->Main_model->get_all("peserta", ["id_kelas" => $id]);
@@ -753,7 +766,7 @@ class Kelas extends CI_CONTROLLER{
 
     // delete
         public function delete_kbm($id){
-            $nip = $this->session->userdata("id");
+            $nip = $this->session->userdata('nip');
             // $data = $this->Civitas_model->delete_kbm($id);
             $data = $this->Main_model->delete_data("kbm", ["id_kbm" => $id, "nip" => $nip]);
             if($data){
@@ -765,7 +778,7 @@ class Kelas extends CI_CONTROLLER{
         }
 
         // public function delete_kbm_pembinaan($id){
-        //     $nip = $this->session->userdata("id");
+        //     $nip = $this->session->userdata('nip');
         //     // $data = $this->Civitas_model->delete_kbm($id);
         //     $data = $this->Main_model->delete_data("kbm_pembinaan", ["id_kbm" => $id, "nip" => $nip]);
         //     if($data){
@@ -777,7 +790,7 @@ class Kelas extends CI_CONTROLLER{
         // }
 
         public function delete_kbm_pembinaan(){
-            $nip = $this->session->userdata("id");
+            $nip = $this->session->userdata('nip');
             $id_kbm = $this->input->post("id_kbm");
             $id_kelas = $this->input->post("id_kelas");
 

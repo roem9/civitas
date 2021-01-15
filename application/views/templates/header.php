@@ -113,7 +113,7 @@
             <a href="<?= base_url()?>kesediaan" class="list-group-item list-group-item-action" id="kesediaan"><i class="fa fa-car mr-1"></i>Kesediaan Mengajar</a>
             <a href="<?= base_url()?>pengaturan/profil" class="list-group-item list-group-item-action" id="profil"><i class="fa fa-user-cog mr-1"></i>Pengaturan Profil</a>
             <a href="<?= base_url()?>pengaturan/password" class="list-group-item list-group-item-action" id="password"><i class="fa fa-key mr-1"></i>Pengaturan Password</a>
-            <a href="<?= base_url()?>login/logout" onclick="return confirm('Yakin akan keluar?')" class="list-group-item list-group-item-action"><i class="fa fa-sign-out-alt mr-1"></i>Keluar</a>
+            <a href="<?= base_url()?>auth/logout" onclick="return confirm('Yakin akan keluar?')" class="list-group-item list-group-item-action"><i class="fa fa-sign-out-alt mr-1"></i>Keluar</a>
 
           </div>
         </nav>

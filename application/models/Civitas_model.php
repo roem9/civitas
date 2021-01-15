@@ -572,13 +572,13 @@ class Civitas_model extends CI_Model{
                 "no_ktp" => $this->input->post("no_ktp", TRUE)
             ];
 
-            $this->db->where("nip", $this->session->userdata("id"));
+            $this->db->where("nip", $this->session->userdata("nip"));
             $this->db->update("kpq", $data);
         }
 
         // hapus?
         public function edit_password(){
-            $this->db->where("id_admin", $this->session->userdata("id"));
+            $this->db->where("id_admin", $this->session->userdata("nip"));
             $this->db->update("admin", ["password" => $this->input->post("pass1")]);
         }
 
@@ -616,7 +616,7 @@ class Civitas_model extends CI_Model{
                 "hari" => $hari[date('l', strtotime($this->input->post("tgl")))],
                 "keterangan" => "badal",
                 "id_kelas" => $this->input->post("id_kelas"),
-                "nip" => $this->session->userdata("id"),
+                "nip" => $this->session->userdata("nip"),
                 "ot" => "0",
                 "jum_peserta" => $jum_peserta,
                 "id_jadwal" => $this->input->post("id_jadwal"),
@@ -640,7 +640,7 @@ class Civitas_model extends CI_Model{
         }
 
         public function add_kbm(){
-            $gol = $this->get_data_kpq($this->session->userdata("id"));
+            $gol = $this->get_data_kpq($this->session->userdata("nip"));
             $day = array(
                 'Sunday' => 'Ahad',
                 'Monday' => 'Senin',
@@ -693,7 +693,7 @@ class Civitas_model extends CI_Model{
                 "jam" => $jam,
                 "keterangan" => $this->input->post("keterangan"),
                 "id_kelas" => $this->input->post("id_kelas"),
-                "nip" => $this->session->userdata("id"),
+                "nip" => $this->session->userdata("nip"),
                 "biaya" => $gol['honor'],
                 "ot" => 0,
                 "id_jadwal" => $this->input->post("id_jadwal"),
@@ -736,7 +736,7 @@ class Civitas_model extends CI_Model{
 
         
         public function add_kbm_pembinaan(){
-            $gol = $this->get_data_kpq($this->session->userdata("id"));
+            $gol = $this->get_data_kpq($this->session->userdata("nip"));
             $day = array(
                 'Sunday' => 'Ahad',
                 'Monday' => 'Senin',
@@ -795,7 +795,7 @@ class Civitas_model extends CI_Model{
                 "jam" => $jam,
                 "keterangan" => "sesuai",
                 "id_kelas" => $this->input->post("id_kelas"),
-                "nip" => $this->session->userdata("id"),
+                "nip" => $this->session->userdata("nip"),
                 "biaya" => $gol['honor'],
                 "ot" => 0,
                 "program_kbm" => $data['program'],
@@ -822,7 +822,7 @@ class Civitas_model extends CI_Model{
         }
 
         public function rekap_badal(){
-            $gol = $this->get_data_kpq($this->session->userdata("id"));
+            $gol = $this->get_data_kpq($this->session->userdata("nip"));
             // biaya
             $this->db->from("kelas");
             $this->db->where("id_kelas", $this->input->post("id_kelas"));
@@ -877,7 +877,7 @@ class Civitas_model extends CI_Model{
 
             if($data['nip'] == null || $data['nip'] == ''){
                 $this->db->where("id_kelas", $id);
-                $this->db->update("kelas", ["nip" => $this->session->userdata("id"), "status" => "konfirm"]);
+                $this->db->update("kelas", ["nip" => $this->session->userdata("nip"), "status" => "konfirm"]);
                 return $this->db->affected_rows();
             } else {
                 return 0;
@@ -887,7 +887,7 @@ class Civitas_model extends CI_Model{
 
         // hapus?
         public function add_kesediaan(){
-            $nip = $this->session->userdata("id");
+            $nip = $this->session->userdata('nip');
             $this->db->where("nip", $nip);
             $this->db->delete("kesediaan");
 
@@ -910,7 +910,7 @@ class Civitas_model extends CI_Model{
         // hapus?
         public function delete_kbm($id){
             $this->db->where("id_kbm", $id);
-            $this->db->where("nip", $this->session->userdata("id"));
+            $this->db->where("nip", $this->session->userdata("nip"));
             $this->db->delete("kbm");
             return $this->db->affected_rows();
         }
@@ -918,7 +918,7 @@ class Civitas_model extends CI_Model{
         // hapus?
         public function delete_inbox($id){
             $this->db->where("id_inbox", $id);
-            $this->db->where("nip", $this->session->userdata("id"));
+            $this->db->where("nip", $this->session->userdata("nip"));
             $this->db->delete("inbox");
             return $this->db->affected_rows();
         }

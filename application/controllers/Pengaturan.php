@@ -5,14 +5,14 @@ class Pengaturan extends CI_CONTROLLER{
         parent::__construct();
         $this->load->model('Civitas_model');
         $this->load->model('Main_model');
-        if($this->session->userdata('status') != "login" || empty($this->session->userdata('id'))){
+        if(!$this->session->userdata('nip')){
             $this->session->set_flashdata('login', 'Maaf, Anda harus login terlebih dahulu');
-            redirect(base_url("login"));
+			redirect(base_url("auth"));
 		}
     }
 
     public function password(){
-        $nip = $this->session->userdata('id');
+        $nip = $this->session->userdata('nip');
 
         $data['title'] = "Pengaturan Password";
         
@@ -51,7 +51,7 @@ class Pengaturan extends CI_CONTROLLER{
     }
     
     public function profil(){
-        $nip = $this->session->userdata('id');
+        $nip = $this->session->userdata('nip');
         $data['title'] = "Pengaturan Profil";
         
         // kbm pembinaan badal 
@@ -92,7 +92,7 @@ class Pengaturan extends CI_CONTROLLER{
 
     // edit
         public function edit_kpq(){
-            $nip = $this->session->userdata("id");
+            $nip = $this->session->userdata('nip');
             // $data = $this->Civitas_model->edit_kpq();
             $data = [
                 "t4_lahir" => $this->input->post("t4_lahir", TRUE),
@@ -116,7 +116,7 @@ class Pengaturan extends CI_CONTROLLER{
             $pass1 = $this->input->post("pass1", TRUE);
             $pass2 = $this->input->post("pass2", TRUE);
             if($pass1 === $pass2){
-                $nip = $this->session->userdata("id");
+                $nip = $this->session->userdata('nip');
                 $data = [
                     "password" => $pass1
                 ];
@@ -135,7 +135,7 @@ class Pengaturan extends CI_CONTROLLER{
 
     // add
         public function add_kesediaan(){
-            $nip = $this->session->userdata("id");
+            $nip = $this->session->userdata('nip');
             // delete kesediaan seluruhnya
                 $this->Main_model->delete_data("kesediaan", ["nip" => $nip]);
             // delete kesediaan seluruhnya

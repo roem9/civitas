@@ -5,14 +5,14 @@ class Kesediaan extends CI_CONTROLLER{
         parent::__construct();
         $this->load->model('Civitas_model');
         $this->load->model('Main_model');
-        if($this->session->userdata('status') != "login" || empty($this->session->userdata('id'))){
+        if(!$this->session->userdata('nip')){
             $this->session->set_flashdata('login', 'Maaf, Anda harus login terlebih dahulu');
-			redirect(base_url("login"));
+			redirect(base_url("auth"));
 		}
     }
 
     public function index(){
-        $nip = $this->session->userdata('id');
+        $nip = $this->session->userdata('nip');
         
         $this->Civitas_model->edit_status_inbox($nip);
 
@@ -53,7 +53,7 @@ class Kesediaan extends CI_CONTROLLER{
         // }
         
         public function add_kesediaan(){
-            $nip = $this->session->userdata("id");
+            $nip = $this->session->userdata('nip');
             // delete kesediaan seluruhnya
                 $this->Main_model->delete_data("kesediaan", ["nip" => $nip]);
             // delete kesediaan seluruhnya

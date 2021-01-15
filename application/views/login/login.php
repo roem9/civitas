@@ -36,6 +36,9 @@
                             <span class="input-group-text bg-light" id="showPass"><div class="i fa fa-eye"></div></span>
                           </div>
                         </div>
+                        <div class="form-group">
+                          <input type="checkbox" name="remember" id="remember" value="remember"> <label for="remember">Ingat saya</label>
+                        </div>
                         <button type="submit" class="btn btn-primary btn-user btn-block"><i class="fa fa-sign-in-alt mr-1"></i> <b>Masuk</b></button>
                     </form>
                 </div>
