@@ -49,16 +49,21 @@ class Home extends CI_CONTROLLER{
 
         // hitung ot
             $data['ot'] = 0;
-            $kelas = $this->Civitas_model->get_all_jadwal_kpq($nip);
+            $kelas = $this->Main_model->get_all_join_table("kelas", "jadwal", "id_kelas", ["kelas.nip" => $nip, "kelas.status" => "aktif", "jadwal.status" => "aktif"]);
+            $month = date("m");
+            $year = date("Y");
+
             foreach ($kelas as $i => $kelas) {
-                $ot = $this->Civitas_model->get_total_kbm_by_jadwal_now($kelas['id_jadwal']);
-                $x = $this->ot($gol, $ot['kbm'], $kelas['ot']);
+                $where = "id_kbm NOT IN(SELECT id_kbm FROM kbm_badal) AND id_jadwal = {$kelas['id_jadwal']} AND MONTH(tgl) = {$month} AND YEAR(tgl) = {$year}";
+
+                $ot = $this->Main_model->get_all("kbm", $where);
+                $x = $this->ot($gol, COUNT($ot), $kelas['ot']);
                 $data['ot'] += $x;
             }
             // badal
-                $kelas = $this->Civitas_model->get_badal_now($nip);
+                $kelas = $this->Main_model->get_all_join_table("kbm", "kbm_badal", "id_kbm", ["nip_badal" => $nip, "MONTH(tgl)" => $month, "YEAR(tgl)" => $year]);
                 foreach ($kelas as $kelas) {
-                    $jadwal = $this->Civitas_model->get_data_jadwal($kelas['id_jadwal']);
+                    $jadwal = $this->Main_model->get_one("jadwal", ["id_jadwal" => $kelas['id_jadwal']]);
                     $x = $this->ot($gol, 1, $jadwal['ot']);
                     $data['ot'] += $x;
                 }
@@ -110,13 +115,13 @@ class Home extends CI_CONTROLLER{
 
     // get
         public function get_detail_golongan(){
-            $id = $this->input->post("nip");
+            $id = $this->input->post("id");
             $data = $this->Civitas_model->get_detail_golongan($id);
             echo json_encode($data);
         }
 
         public function get_detail_ot(){
-            $id = $this->input->post("nip");
+            $id = $this->input->post("id");
             $data = $this->Civitas_model->get_detail_ot($id);
 
             $data = $data['detail'];
@@ -130,98 +135,94 @@ class Home extends CI_CONTROLLER{
 
     // other function
         public function ot($gol, $kbm, $oot){
-            if($kbm == 0){
-                return $ot = 0;
+            if($gol != 'E'){
+                if($oot == '3'){
+                    if($kbm == '5'){
+                        return $ot = 62500;
+                    } else if($kbm == '4'){
+                        return $ot = 50000;
+                    } else if($kbm == '3'){
+                        return $ot = 37500;
+                    } else if($kbm == '2'){
+                        return $ot = 25000;
+                    } else if($kbm == '1'){
+                        return $ot = 12500;
+                    } else {
+                        return $ot = 0;
+                    }
+                } else if($oot == '2'){
+                    if($kbm == '5'){
+                        return $ot = 42000;
+                    } else if($kbm == '4'){
+                        return $ot = 33500;
+                    } else if($kbm == '3'){
+                        return $ot = 25000;
+                    } else if($kbm == '2'){
+                        return $ot = 17000;
+                    } else if($kbm == '1'){
+                        return $ot = 8500;
+                    } else {
+                        return $ot = 0;
+                    }
+                } else if($oot == '1'){
+                    if($kbm == '5'){
+                        return $ot = 21000;
+                    } else if($kbm == '4'){
+                        return $ot = 17000;
+                    } else if($kbm == '3'){
+                        return $ot = 12500;
+                    } else if($kbm == '2'){
+                        return $ot = 8500;
+                    } else if($kbm == '1'){
+                        return $ot = 4500;
+                    } else {
+                        return $ot = 0;
+                    }
+                } 
             } else {
-                if($gol != 'E'){
-                    if($oot == '3'){
-                        if($kbm == '5'){
-                            return $ot = 62500;
-                        } else if($kbm == '4'){
-                            return $ot = 50000;
-                        } else if($kbm == '3'){
-                            return $ot = 37500;
-                        } else if($kbm == '2'){
-                            return $ot = 25000;
-                        } else if($kbm == '1'){
-                            return $ot = 12500;
-                        } else {
-                            return $ot = 0;
-                        }
-                    } else if($oot == '2'){
-                        if($kbm == '5'){
-                            return $ot = 42000;
-                        } else if($kbm == '4'){
-                            return $ot = 33500;
-                        } else if($kbm == '3'){
-                            return $ot = 25000;
-                        } else if($kbm == '2'){
-                            return $ot = 17000;
-                        } else if($kbm == '1'){
-                            return $ot = 8500;
-                        } else {
-                            return $ot = 0;
-                        }
-                    } else if($oot == '1'){
-                        if($kbm == '5'){
-                            return $ot = 21000;
-                        } else if($kbm == '4'){
-                            return $ot = 17000;
-                        } else if($kbm == '3'){
-                            return $ot = 12500;
-                        } else if($kbm == '2'){
-                            return $ot = 8500;
-                        } else if($kbm == '1'){
-                            return $ot = 4500;
-                        } else {
-                            return $ot = 0;
-                        }
-                    } 
-                } else {
-                    if($oot == '3'){
-                        if($kbm == '5'){
-                            return $ot = 262500;
-                        } else if($kbm == '4'){
-                            return $ot = 210000;
-                        } else if($kbm == '3'){
-                            return $ot = 157500;
-                        } else if($kbm == '2'){
-                            return $ot = 105000;
-                        } else if($kbm == '1'){
-                            return $ot = 52500;
-                        } else {
-                            return $ot = 0;
-                        }
-                    } else if($oot == '2'){
-                        if($kbm == '5'){
-                            return $ot = 175000;
-                        } else if($kbm == '4'){
-                            return $ot = 140000;
-                        } else if($kbm == '3'){
-                            return $ot = 105000;
-                        } else if($kbm == '2'){
-                            return $ot = 70000;
-                        } else if($kbm == '1'){
-                            return $ot = 35000;
-                        } else {
-                            return $ot = 0;
-                        }
-                    } else if($oot == '1'){
-                        if($kbm == '5'){
-                            return $ot = 87500;
-                        } else if($kbm == '4'){
-                            return $ot = 70000;
-                        } else if($kbm == '3'){
-                            return $ot = 52500;
-                        } else if($kbm == '2'){
-                            return $ot = 35000;
-                        } else if($kbm == '1'){
-                            return $ot = 17500;
-                        } else {
-                            return $ot = 0;
-                        }
-                    } 
-                }
+                if($oot == '3'){
+                    if($kbm == '5'){
+                        return $ot = 262500;
+                    } else if($kbm == '4'){
+                        return $ot = 210000;
+                    } else if($kbm == '3'){
+                        return $ot = 157500;
+                    } else if($kbm == '2'){
+                        return $ot = 105000;
+                    } else if($kbm == '1'){
+                        return $ot = 52500;
+                    } else {
+                        return $ot = 0;
+                    }
+                } else if($oot == '2'){
+                    if($kbm == '5'){
+                        return $ot = 175000;
+                    } else if($kbm == '4'){
+                        return $ot = 140000;
+                    } else if($kbm == '3'){
+                        return $ot = 105000;
+                    } else if($kbm == '2'){
+                        return $ot = 70000;
+                    } else if($kbm == '1'){
+                        return $ot = 35000;
+                    } else {
+                        return $ot = 0;
+                    }
+                } else if($oot == '1'){
+                    if($kbm == '5'){
+                        return $ot = 87500;
+                    } else if($kbm == '4'){
+                        return $ot = 70000;
+                    } else if($kbm == '3'){
+                        return $ot = 52500;
+                    } else if($kbm == '2'){
+                        return $ot = 35000;
+                    } else if($kbm == '1'){
+                        return $ot = 17500;
+                    } else {
+                        return $ot = 0;
+                    }
+                } 
             }
         }
     // other function

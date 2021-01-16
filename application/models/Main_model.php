@@ -67,4 +67,12 @@ class Main_model extends CI_MODEL{
         $this->db->order_by("id", "DESC");
         return $this->db->get()->row_array();
     }
+
+    public function get_all_join_table($table1, $table2, $key, $where, $join="right"){
+        $this->db->from($table1);
+        $this->db->join($table2, "$table1.$key = $table2.$key", $join);
+        if($where)
+            $this->db->where($where);
+        return $this->db->get()->result_array();
+    }
 }
