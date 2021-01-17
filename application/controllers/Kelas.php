@@ -651,7 +651,7 @@ class Kelas extends CI_CONTROLLER{
             }
             
             if($tipe == "kelas"){
-                $data = $this->Main_model->get_all("peserta", ["id_kelas" => $id]);
+                $data = $this->Main_model->get_all("peserta", ["id_kelas" => $id, "status" => "aktif"], "nama_peserta");
             } else {
                 $peserta = $this->Main_model->get_all("kelas_kpq", ["id_kelas" => $id]);
                 foreach ($peserta as $i => $peserta) {
