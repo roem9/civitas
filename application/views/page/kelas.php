@@ -380,9 +380,16 @@
                                             <a href="#modalBadal" data-id="<?= $kelas['id_kelas']?>|<?= $kelas['id_jadwal']?>|<?= $kelas['nama_peserta']?>|<?= $kelas['program']?>|<?= $kelas['hari'] . " " . $kelas['jam']?>" data-toggle="modal" class="btn btn-sm btn-danger modal-badal"><i class="fa fa-exchange-alt"></i></a>
                                         <?php endif;?>
                                         <a href="#modalKbm" data-id="<?= $kelas['id_jadwal']?>" data-toggle="modal" class="btn btn-sm btn-success modal-kbm"><i class="fa fa-list-ol"></i> <span class="badge badge-danger cek"><?= $kelas['kbm']?></span></a>
+                                        <?php if($kelas['program'] == "Tahfidz Anak" || $kelas['program'] == "Tahfidz Remaja" || $kelas['program'] == "Tahfidz Dewasa") :?>
+                                            <a href="<?= base_url()?>kelas/tahfidz/<?= md5($kelas['id_jadwal'])?>" class="btn btn-sm btn-warning"><i class="fa fa-file"></i></a>
+                                        <?php elseif($kelas['program'] == "Pra Tahsin 1" || $kelas['program'] == "Pra Tahsin 2" || $kelas['program'] == "Pra Tahsin 3" || $kelas['program'] == "Tahsin 1" || $kelas['program'] == "Tahsin 2" || $kelas['program'] == "Tahsin 3" || $kelas['program'] == "Tahsin 4" || $kelas['program'] == "Tahsin Lanjutan") : ?>
+                                            <a href="<?= base_url()?>kelas/tahsin/<?= md5($kelas['id_jadwal'])?>" class="btn btn-sm btn-warning"><i class="fa fa-file"></i></a>
+                                        <?php elseif($kelas['program'] == "Bahasa Arab 1" || $kelas['program'] == "Bahasa Arab 2" || $kelas['program'] == "Bahasa Arab 3" || $kelas['program'] == "Bahasa Arab 4" || $kelas['program'] == "Bahasa Arab Lanjutan") : ?>
+                                            <a href="<?= base_url()?>kelas/b_arab/<?= md5($kelas['id_jadwal'])?>" class="btn btn-sm btn-warning"><i class="fa fa-file"></i></a>
+                                        <?php endif;?>
                                     </span>
                                     <?php if($kelas['ot'] * 30 != 0):?>
-                                        <!-- <div class="btn btn-outline-info btn-sm">OT : <?= $kelas['ot'] * 30?></div> -->
+                                        <div class="btn btn-outline-info btn-sm">OT : <?= $kelas['ot'] * 30?></div>
                                     <?php endif;?>
                                 </li>
                             </ul>

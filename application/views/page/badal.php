@@ -38,21 +38,21 @@
         <form action="<?= base_url()?>kelas/rekap_badal_pembinaan" method="post" id="form-1">
             <input type="hidden" name="id_kbm" id="id_kbm_pembinaan">
             <input type="hidden" name="id_kelas" id="id_kelas_pembinaan">
-            <div class="form-group">
+            <!-- <div class="form-group">
                 <label for="keterangan_badal">Keterangan</label>
                 <select name="keterangan_badal" id="keterangan_badal" class="form-control form-control-sm">
                     <option value="">Pilih Keterangan</option>
                     <option value="badal">Badal</option>
                     <option value="gabungan">Gabungan</option>
                 </select>
-            </div>
+            </div> -->
             <div class="form-group">
                 <label for="materi">Materi</label>
-                <textarea name="materi" id="materi" class="form-control form-control-sm"></textarea>
+                <textarea name="materi" id="materi" class="form-control form-control-sm" required></textarea>
             </div>
             <div class="form-group">
                 <label for="tugas">Tugas</label>
-                <textarea name="tugas" id="tugas" class="form-control form-control-sm"></textarea>
+                <textarea name="tugas" id="tugas" class="form-control form-control-sm" required></textarea>
             </div>
             <label for=""><strong>List Peserta</strong></label>
             <div class="list-peserta-pembinaan"></div>
@@ -197,6 +197,7 @@
                                 <div class="col-2">
                                     <select name="keterangan[]" id="keterangan" class="form form-control-sm">
                                         <option value="hadir" selected>Hadir</option>
+                                        <option value="tidak hadir">Tdk Hadir</option>
                                         <option value="izin">Izin</option>
                                         <option value="sakit">Sakit</option>
                                     </select>
@@ -234,5 +235,3 @@
         })
     })
 </script>
-
-

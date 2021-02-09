@@ -34,6 +34,7 @@
           $('a[aria-expanded=true]').attr('aria-expanded', 'false');
           $(".navbar-ku").removeClass("sticky-top");
       });
+
     })
   </script>
 

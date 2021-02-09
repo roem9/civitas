@@ -179,6 +179,7 @@
                                 <div class="col-2">
                                     <select name="keterangan[]" id="keterangan" class="form form-control-sm">
                                         <option value="hadir" selected>Hadir</option>
+                                        <option value="tidak hadir">Tdk Hadir</option>
                                         <option value="izin">Izin</option>
                                         <option value="sakit">Sakit</option>
                                     </select>
@@ -286,6 +287,8 @@
                     else izin = '';
                     if(peserta.keterangan == 'sakit') sakit = "selected"
                     else sakit = '';
+                    if(peserta.keterangan == 'tidak hadir') tdk_hadir = "selected"
+                    else tdk_hadir = '';
 
                     if(result.badal.length != 0){
                         html += `
@@ -295,6 +298,7 @@
                                 <div class="col-2">
                                     <select name="keterangan_edit[]" class="form form-control-sm" disabled>
                                         <option value="hadir" `+hadir+`>Hadir</option>
+                                        <option value="tidak hadir" `+tdk_hadir+`>Tdk Hadir</option>
                                         <option value="izin" `+izin+`>Izin</option>
                                         <option value="sakit" `+sakit+`>Sakit</option>
                                     </select>
@@ -308,6 +312,7 @@
                                 <div class="col-2">
                                     <select name="keterangan_edit[]" class="form form-control-sm">
                                         <option value="hadir" `+hadir+`>Hadir</option>
+                                        <option value="tidak hadir" `+tdk_hadir+`>Tdk Hadir</option>
                                         <option value="izin" `+izin+`>Izin</option>
                                         <option value="sakit" `+sakit+`>Sakit</option>
                                     </select>

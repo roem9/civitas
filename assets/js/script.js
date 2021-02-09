@@ -35,3 +35,4 @@ function setInputFilter(textbox, inputFilter) {
     }
 
     // console.log(formatRupiah('1000', 'Rp. '))
+    

@@ -5,6 +5,7 @@ class Kelas extends CI_CONTROLLER{
         parent::__construct();
         $this->load->model('Civitas_model');
         $this->load->model('Main_model');
+        $this->load->model('Kelas_model');
         if(!$this->session->userdata('nip')){
             $this->session->set_flashdata('login', 'Maaf, Anda harus login terlebih dahulu');
 			redirect(base_url("auth"));
@@ -12,46 +13,18 @@ class Kelas extends CI_CONTROLLER{
     }
 
     public function index(){
+        $data = $this->Main_model->sidebar();
+
         $data['title'] = "Jadwal KBM Semua Hari";
         $nip = $this->session->userdata('nip');
-
-        // kbm pembinaan badal 
-            $badal = 0;
-            $kbm = $this->Main_model->get_all("kbm_pembinaan", ["MONTH(tgl)" => date('m'), "YEAR(tgl)" => date('Y')]);
-            foreach ($kbm as $kbm) {
-                $cek = $this->Main_model->get_one("kbm_badal_pembinaan", ["id_kbm" => $kbm['id_kbm']]);
-                if($cek) $badal++;
-            }
-        // kbm pembinaan badal 
-
-        // sidebar
-            $data['jml_wl'] = COUNT($this->Civitas_model->get_all_wl());
-            $data['kpq'] = $this->Civitas_model->get_all_kpq();
-            $data['program'] = $this->Civitas_model->get_all_program();
-            $data['jml_inbox'] = COUNT($this->Civitas_model->get_all_inbox_off($nip));
-            $data['jml_badal'] = COUNT($this->Civitas_model->get_all_jadwal_badal_kpq($nip)) + $badal;
-            $data['jml_kelas'] = COUNT($this->Civitas_model->get_all_jadwal_kpq($nip)) + COUNT($this->Main_model->get_all("kelas_pembinaan", ["nip" => $nip, "status" => "aktif"]));
-            $data['jml'] = [
-                "senin" => COUNT($this->Civitas_model->get_jadwal_hari_kpq($nip, 'senin')) + COUNT($this->Main_model->get_all("kelas_pembinaan", ["nip" => $nip, "status" => "aktif", "hari" => "senin"])),
-                "selasa" => COUNT($this->Civitas_model->get_jadwal_hari_kpq($nip, 'selasa')) + COUNT($this->Main_model->get_all("kelas_pembinaan", ["nip" => $nip, "status" => "aktif", "hari" => "selasa"])),
-                "rabu" => COUNT($this->Civitas_model->get_jadwal_hari_kpq($nip, 'rabu')) + COUNT($this->Main_model->get_all("kelas_pembinaan", ["nip" => $nip, "status" => "aktif", "hari" => "rabu"])),
-                "kamis" => COUNT($this->Civitas_model->get_jadwal_hari_kpq($nip, 'kamis')) + COUNT($this->Main_model->get_all("kelas_pembinaan", ["nip" => $nip, "status" => "aktif", "hari" => "kamis"])),
-                "jumat" => COUNT($this->Civitas_model->get_jadwal_hari_kpq($nip, 'jumat')) + COUNT($this->Main_model->get_all("kelas_pembinaan", ["nip" => $nip, "status" => "aktif", "hari" => "jumat"])),
-                "sabtu" => COUNT($this->Civitas_model->get_jadwal_hari_kpq($nip, 'sabtu')) + COUNT($this->Main_model->get_all("kelas_pembinaan", ["nip" => $nip, "status" => "aktif", "hari" => "sabtu"])),
-                "ahad" => COUNT($this->Civitas_model->get_jadwal_hari_kpq($nip, 'ahad')) + COUNT($this->Main_model->get_all("kelas_pembinaan", ["nip" => $nip, "status" => "aktif", "hari" => "ahad"]))
-            ];
-        // sidebar
-
-        // $data['jml_kelas'] = COUNT($this->Civitas_model->get_all_kelas_kpq($nip));
         
-        $data['kelas_pembinaan'] = [];
         $data['kelas'] = $this->Civitas_model->get_all_jadwal_kpq($nip);
+
+        $data['kelas_pembinaan'] = [];
         $kelas_pembinaan = $this->Main_model->get_all("kelas_pembinaan", ["nip" => $nip, "status" => "aktif"]);
         foreach ($kelas_pembinaan as $i => $kelas) {
             $data['kelas_pembinaan'][$i] = $kelas;
             $data['kelas_pembinaan'][$i]['kbm'] = COUNT($this->Main_model->get_all("kbm_pembinaan", ["id_kelas" => $kelas['id_kelas'], "MONTH(tgl)" => date('m'), "YEAR(tgl)" => date('Y')]));
-            // $data['kelas_pembinaan']['kbm'] = 1;
-
         }
 
         // var_dump($data['kelas_pembinaan']);
@@ -64,45 +37,18 @@ class Kelas extends CI_CONTROLLER{
     }
 
     public function hari($hari){
+        $data = $this->Main_model->sidebar();
         $data['title'] = "Jadwal KBM " . ucwords($hari);
         $nip = $this->session->userdata('nip');
         
-        $data['program'] = $this->Civitas_model->get_all_program();
-        // kbm pembinaan badal 
-            $badal = 0;
-            $kbm = $this->Main_model->get_all("kbm_pembinaan", ["MONTH(tgl)" => date('m'), "YEAR(tgl)" => date('Y')]);
-            foreach ($kbm as $kbm) {
-                $cek = $this->Main_model->get_one("kbm_badal_pembinaan", ["id_kbm" => $kbm['id_kbm']]);
-                if($cek) $badal++;
-            }
-        // kbm pembinaan badal 
-
-        // sidebar
-            $data['jml_wl'] = COUNT($this->Civitas_model->get_all_wl());
-            $data['kpq'] = $this->Civitas_model->get_all_kpq();
-            $data['program'] = $this->Civitas_model->get_all_program();
-            $data['jml_inbox'] = COUNT($this->Civitas_model->get_all_inbox_off($nip));
-            $data['jml_badal'] = COUNT($this->Civitas_model->get_all_jadwal_badal_kpq($nip)) + $badal;
-            $data['jml_kelas'] = COUNT($this->Civitas_model->get_all_jadwal_kpq($nip)) + COUNT($this->Main_model->get_all("kelas_pembinaan", ["nip" => $nip, "status" => "aktif"]));
-            $data['jml'] = [
-                "senin" => COUNT($this->Civitas_model->get_jadwal_hari_kpq($nip, 'senin')) + COUNT($this->Main_model->get_all("kelas_pembinaan", ["nip" => $nip, "status" => "aktif", "hari" => "senin"])),
-                "selasa" => COUNT($this->Civitas_model->get_jadwal_hari_kpq($nip, 'selasa')) + COUNT($this->Main_model->get_all("kelas_pembinaan", ["nip" => $nip, "status" => "aktif", "hari" => "selasa"])),
-                "rabu" => COUNT($this->Civitas_model->get_jadwal_hari_kpq($nip, 'rabu')) + COUNT($this->Main_model->get_all("kelas_pembinaan", ["nip" => $nip, "status" => "aktif", "hari" => "rabu"])),
-                "kamis" => COUNT($this->Civitas_model->get_jadwal_hari_kpq($nip, 'kamis')) + COUNT($this->Main_model->get_all("kelas_pembinaan", ["nip" => $nip, "status" => "aktif", "hari" => "kamis"])),
-                "jumat" => COUNT($this->Civitas_model->get_jadwal_hari_kpq($nip, 'jumat')) + COUNT($this->Main_model->get_all("kelas_pembinaan", ["nip" => $nip, "status" => "aktif", "hari" => "jumat"])),
-                "sabtu" => COUNT($this->Civitas_model->get_jadwal_hari_kpq($nip, 'sabtu')) + COUNT($this->Main_model->get_all("kelas_pembinaan", ["nip" => $nip, "status" => "aktif", "hari" => "sabtu"])),
-                "ahad" => COUNT($this->Civitas_model->get_jadwal_hari_kpq($nip, 'ahad')) + COUNT($this->Main_model->get_all("kelas_pembinaan", ["nip" => $nip, "status" => "aktif", "hari" => "ahad"]))
-            ];
-        // sidebar
-        
-        $data['kelas_pembinaan'] = [];
+        $data['program'] = $this->Civitas_model->get_all_program();        
         $data['kelas'] = $this->Civitas_model->get_jadwal_hari_kpq($nip, $hari);
+
+        $data['kelas_pembinaan'] = [];
         $kelas_pembinaan = $this->Main_model->get_all("kelas_pembinaan", ["nip" => $nip, "status" => "aktif", "hari" => $hari]);
         foreach ($kelas_pembinaan as $i => $kelas) {
             $data['kelas_pembinaan'][$i] = $kelas;
             $data['kelas_pembinaan'][$i]['kbm'] = COUNT($this->Main_model->get_all("kbm_pembinaan", ["id_kelas" => $kelas['id_kelas'], "MONTH(tgl)" => date('m'), "YEAR(tgl)" => date('Y')]));
-            // $data['kelas_pembinaan']['kbm'] = 1;
-
         }
         
         // var_dump($data);
@@ -112,43 +58,19 @@ class Kelas extends CI_CONTROLLER{
     }
 
     public function badal(){
+        $data = $this->Main_model->sidebar();
         $data['title'] = "Jadwal Badal";
         $nip = $this->session->userdata('nip');
         
-        // kbm pembinaan badal 
-            $data['pembinaan'] = [];
-            $badal = 0;
-            $kbm = $this->Main_model->get_all("kbm_pembinaan", ["MONTH(tgl)" => date('m'), "YEAR(tgl)" => date('Y')]);
-            foreach ($kbm as $kbm) {
-                $cek = $this->Main_model->get_one("kbm_badal_pembinaan", ["id_kbm" => $kbm['id_kbm'], "rekap" => 0, "nip_badal" => $nip]);
-                if($cek) {
-                    $data['pembinaan'][$badal] = $kbm;
-                    $kpq = $this->Main_model->get_one("kpq", ["nip" => $kbm['nip']]);
-                    $data['pembinaan'][$badal]['nama_kpq'] = $kpq['nama_kpq'];
-                    $badal++;
-                }
-            }
-        // kbm pembinaan badal 
-
-        // sidebar
-            $data['jml_wl'] = COUNT($this->Civitas_model->get_all_wl());
-            $data['kpq'] = $this->Civitas_model->get_all_kpq();
-            $data['program'] = $this->Civitas_model->get_all_program();
-            $data['jml_inbox'] = COUNT($this->Civitas_model->get_all_inbox_off($nip));
-            $data['jml_badal'] = COUNT($this->Civitas_model->get_all_jadwal_badal_kpq($nip)) + $badal;
-            $data['jml_kelas'] = COUNT($this->Civitas_model->get_all_jadwal_kpq($nip)) + COUNT($this->Main_model->get_all("kelas_pembinaan", ["nip" => $nip, "status" => "aktif"]));
-            $data['jml'] = [
-                "senin" => COUNT($this->Civitas_model->get_jadwal_hari_kpq($nip, 'senin')) + COUNT($this->Main_model->get_all("kelas_pembinaan", ["nip" => $nip, "status" => "aktif", "hari" => "senin"])),
-                "selasa" => COUNT($this->Civitas_model->get_jadwal_hari_kpq($nip, 'selasa')) + COUNT($this->Main_model->get_all("kelas_pembinaan", ["nip" => $nip, "status" => "aktif", "hari" => "selasa"])),
-                "rabu" => COUNT($this->Civitas_model->get_jadwal_hari_kpq($nip, 'rabu')) + COUNT($this->Main_model->get_all("kelas_pembinaan", ["nip" => $nip, "status" => "aktif", "hari" => "rabu"])),
-                "kamis" => COUNT($this->Civitas_model->get_jadwal_hari_kpq($nip, 'kamis')) + COUNT($this->Main_model->get_all("kelas_pembinaan", ["nip" => $nip, "status" => "aktif", "hari" => "kamis"])),
-                "jumat" => COUNT($this->Civitas_model->get_jadwal_hari_kpq($nip, 'jumat')) + COUNT($this->Main_model->get_all("kelas_pembinaan", ["nip" => $nip, "status" => "aktif", "hari" => "jumat"])),
-                "sabtu" => COUNT($this->Civitas_model->get_jadwal_hari_kpq($nip, 'sabtu')) + COUNT($this->Main_model->get_all("kelas_pembinaan", ["nip" => $nip, "status" => "aktif", "hari" => "sabtu"])),
-                "ahad" => COUNT($this->Civitas_model->get_jadwal_hari_kpq($nip, 'ahad')) + COUNT($this->Main_model->get_all("kelas_pembinaan", ["nip" => $nip, "status" => "aktif", "hari" => "ahad"]))
-            ];
-        // sidebar
-
         $data['kelas'] = $this->Civitas_model->get_all_jadwal_badal_kpq($nip);
+        $pembinaan = $this->Main_model->get_all("kbm_badal_pembinaan", ["nip_badal" => $nip, "rekap" => 0]);
+        $data['pembinaan'] = [];
+        foreach ($pembinaan as $i => $pembinaan) {
+            $data_pembinaan = $this->Main_model->get_one("kbm_pembinaan", ["id_kbm" => $pembinaan['id_kbm']]);
+            $data_kpq = $this->Main_model->get_one("kpq", ["nip" => $data_pembinaan['nip']]);
+            $data['pembinaan'][$i] = $data_pembinaan;
+            $data['pembinaan'][$i]['nama_kpq'] = $data_kpq['nama_kpq'];
+        }
         
         // var_dump($data);
         $this->load->view("templates/header", $data);
@@ -158,41 +80,9 @@ class Kelas extends CI_CONTROLLER{
     }
 
     public function wl(){
+        $data = $this->Main_model->sidebar();
         $data['title'] = "Waiting List";
         $nip = $this->session->userdata('nip');
-        
-        // kbm pembinaan badal 
-            $data['pembinaan'] = [];
-            $badal = 0;
-            $kbm = $this->Main_model->get_all("kbm_pembinaan", ["MONTH(tgl)" => date('m'), "YEAR(tgl)" => date('Y')]);
-            foreach ($kbm as $kbm) {
-                $cek = $this->Main_model->get_one("kbm_badal_pembinaan", ["id_kbm" => $kbm['id_kbm'], "rekap" => 0, "nip_badal" => $nip]);
-                if($cek) {
-                    $data['pembinaan'][$badal] = $kbm;
-                    $kpq = $this->Main_model->get_one("kpq", ["nip" => $kbm['nip']]);
-                    $data['pembinaan'][$badal]['nama_kpq'] = $kpq['nama_kpq'];
-                    $badal++;
-                }
-            }
-        // kbm pembinaan badal 
-
-        // sidebar
-            $data['jml_wl'] = COUNT($this->Civitas_model->get_all_wl());
-            $data['kpq'] = $this->Civitas_model->get_all_kpq();
-            $data['program'] = $this->Civitas_model->get_all_program();
-            $data['jml_inbox'] = COUNT($this->Civitas_model->get_all_inbox_off($nip));
-            $data['jml_badal'] = COUNT($this->Civitas_model->get_all_jadwal_badal_kpq($nip)) + $badal;
-            $data['jml_kelas'] = COUNT($this->Civitas_model->get_all_jadwal_kpq($nip)) + COUNT($this->Main_model->get_all("kelas_pembinaan", ["nip" => $nip, "status" => "aktif"]));
-            $data['jml'] = [
-                "senin" => COUNT($this->Civitas_model->get_jadwal_hari_kpq($nip, 'senin')) + COUNT($this->Main_model->get_all("kelas_pembinaan", ["nip" => $nip, "status" => "aktif", "hari" => "senin"])),
-                "selasa" => COUNT($this->Civitas_model->get_jadwal_hari_kpq($nip, 'selasa')) + COUNT($this->Main_model->get_all("kelas_pembinaan", ["nip" => $nip, "status" => "aktif", "hari" => "selasa"])),
-                "rabu" => COUNT($this->Civitas_model->get_jadwal_hari_kpq($nip, 'rabu')) + COUNT($this->Main_model->get_all("kelas_pembinaan", ["nip" => $nip, "status" => "aktif", "hari" => "rabu"])),
-                "kamis" => COUNT($this->Civitas_model->get_jadwal_hari_kpq($nip, 'kamis')) + COUNT($this->Main_model->get_all("kelas_pembinaan", ["nip" => $nip, "status" => "aktif", "hari" => "kamis"])),
-                "jumat" => COUNT($this->Civitas_model->get_jadwal_hari_kpq($nip, 'jumat')) + COUNT($this->Main_model->get_all("kelas_pembinaan", ["nip" => $nip, "status" => "aktif", "hari" => "jumat"])),
-                "sabtu" => COUNT($this->Civitas_model->get_jadwal_hari_kpq($nip, 'sabtu')) + COUNT($this->Main_model->get_all("kelas_pembinaan", ["nip" => $nip, "status" => "aktif", "hari" => "sabtu"])),
-                "ahad" => COUNT($this->Civitas_model->get_jadwal_hari_kpq($nip, 'ahad')) + COUNT($this->Main_model->get_all("kelas_pembinaan", ["nip" => $nip, "status" => "aktif", "hari" => "ahad"]))
-            ];
-        // sidebar
 
         $data['kelas'] = [];
         $urut = 0;
@@ -213,38 +103,12 @@ class Kelas extends CI_CONTROLLER{
         $this->load->view("templates/header", $data);
         $this->load->view("page/wl", $data);
         $this->load->view("templates/footer", $data);
-
     }
 
     public function pembinaan($id){
+        $data = $this->Main_model->sidebar();
         $data['title'] = "Kelas Pembinaan";
         $nip = $this->session->userdata('nip');
-
-        // kbm pembinaan badal 
-            $badal = 0;
-            $kbm = $this->Main_model->get_all("kbm_pembinaan", ["MONTH(tgl)" => date('m'), "YEAR(tgl)" => date('Y')]);
-            foreach ($kbm as $kbm) {
-                $cek = $this->Main_model->get_one("kbm_badal_pembinaan", ["id_kbm" => $kbm['id_kbm']]);
-                if($cek) $badal++;
-            }
-        // kbm pembinaan badal 
-        // sidebar
-            $data['jml_wl'] = COUNT($this->Civitas_model->get_all_wl());
-            $data['kpq'] = $this->Civitas_model->get_all_kpq();
-            $data['program'] = $this->Civitas_model->get_all_program();
-            $data['jml_inbox'] = COUNT($this->Civitas_model->get_all_inbox_off($nip));
-            $data['jml_badal'] = COUNT($this->Civitas_model->get_all_jadwal_badal_kpq($nip)) + $badal;
-            $data['jml_kelas'] = COUNT($this->Civitas_model->get_all_jadwal_kpq($nip)) + COUNT($this->Main_model->get_all("kelas_pembinaan", ["nip" => $nip, "status" => "aktif"]));
-            $data['jml'] = [
-                "senin" => COUNT($this->Civitas_model->get_jadwal_hari_kpq($nip, 'senin')) + COUNT($this->Main_model->get_all("kelas_pembinaan", ["nip" => $nip, "status" => "aktif", "hari" => "senin"])),
-                "selasa" => COUNT($this->Civitas_model->get_jadwal_hari_kpq($nip, 'selasa')) + COUNT($this->Main_model->get_all("kelas_pembinaan", ["nip" => $nip, "status" => "aktif", "hari" => "selasa"])),
-                "rabu" => COUNT($this->Civitas_model->get_jadwal_hari_kpq($nip, 'rabu')) + COUNT($this->Main_model->get_all("kelas_pembinaan", ["nip" => $nip, "status" => "aktif", "hari" => "rabu"])),
-                "kamis" => COUNT($this->Civitas_model->get_jadwal_hari_kpq($nip, 'kamis')) + COUNT($this->Main_model->get_all("kelas_pembinaan", ["nip" => $nip, "status" => "aktif", "hari" => "kamis"])),
-                "jumat" => COUNT($this->Civitas_model->get_jadwal_hari_kpq($nip, 'jumat')) + COUNT($this->Main_model->get_all("kelas_pembinaan", ["nip" => $nip, "status" => "aktif", "hari" => "jumat"])),
-                "sabtu" => COUNT($this->Civitas_model->get_jadwal_hari_kpq($nip, 'sabtu')) + COUNT($this->Main_model->get_all("kelas_pembinaan", ["nip" => $nip, "status" => "aktif", "hari" => "sabtu"])),
-                "ahad" => COUNT($this->Civitas_model->get_jadwal_hari_kpq($nip, 'ahad')) + COUNT($this->Main_model->get_all("kelas_pembinaan", ["nip" => $nip, "status" => "aktif", "hari" => "ahad"]))
-            ];
-        // sidebar
 
         $data['kelas'] = $this->Main_model->get_one("kelas_pembinaan", ["md5(id_kelas)" => $id, "nip" => $nip]);
         $data['kelas']['kbm'] = COUNT($this->Main_model->get_all("kbm_pembinaan", ["md5(id_kelas)" => $id, "nip" => $nip, "MONTH(tgl)" => date('m'), "YEAR(tgl)" => date('Y')]));
@@ -254,6 +118,102 @@ class Kelas extends CI_CONTROLLER{
         $this->load->view("page/kelas/detail-kelas-pembinaan", $data);
         $this->load->view("templates/footer", $data);
         
+    }
+
+    public function tahfidz($id_jadwal){
+        $data = $this->Main_model->sidebar();
+        $data['title'] = "Kelas Tahfidz";
+        $nip = $this->session->userdata('nip');
+
+        $jadwal = $this->Main_model->get_one("jadwal", ["md5(id_jadwal)" => $id_jadwal]);
+        $kelas = $this->Main_model->get_one("kelas", ["id_kelas" => $jadwal['id_kelas'], "nip" => $nip]);
+        $koor = $this->Main_model->get_one("kelas_koor", ["id_kelas" => $kelas['id_kelas']]);
+
+        $data['kelas'] = $kelas;
+        $data['kelas']['hari'] = $jadwal['hari'];
+        $data['kelas']['jam'] = $jadwal['jam'];
+        $data['kelas']['tempat'] = $jadwal['tempat'];
+        $data['kelas']['kbm'] = COUNT($this->Main_model->get_all("kbm", ["id_kelas" => $kelas['id_kelas'], "nip" => $nip, "MONTH(tgl)" => date('m'), "YEAR(tgl)" => date('Y')]));
+        
+        if($koor) {
+            $koor = $this->Main_model->get_one("peserta", ["id_peserta" => $koor['id_peserta']]);
+            $data['kelas']['koor'] = $koor['nama_peserta'];
+        } else {
+            $data['kelas']['koor'] = "LKP TAR-Q";
+        }
+
+        // $data['peserta'] = $this->Main_model->get_all("peserta", ["id_kelas" => $kelas['id_kelas']]);
+
+        $data['surah'] = $this->Main_model->get_all("surah", "", "id");
+
+        // var_dump($jadwal);
+        $this->load->view("templates/header", $data);
+        $this->load->view("page/kelas/detail-kelas-tahfidz", $data);
+        $this->load->view("templates/footer", $data);
+    }
+    
+    public function tahsin($id_jadwal){
+        $data = $this->Main_model->sidebar();
+        $data['title'] = "Kelas Tahsin";
+        $nip = $this->session->userdata('nip');
+
+        $jadwal = $this->Main_model->get_one("jadwal", ["md5(id_jadwal)" => $id_jadwal]);
+        $kelas = $this->Main_model->get_one("kelas", ["id_kelas" => $jadwal['id_kelas'], "nip" => $nip]);
+        $koor = $this->Main_model->get_one("kelas_koor", ["id_kelas" => $kelas['id_kelas']]);
+
+        $data['kelas'] = $kelas;
+        $data['kelas']['hari'] = $jadwal['hari'];
+        $data['kelas']['jam'] = $jadwal['jam'];
+        $data['kelas']['tempat'] = $jadwal['tempat'];
+        $data['kelas']['kbm'] = COUNT($this->Main_model->get_all("kbm", ["id_kelas" => $kelas['id_kelas'], "nip" => $nip, "MONTH(tgl)" => date('m'), "YEAR(tgl)" => date('Y')]));
+        
+        if($koor) {
+            $koor = $this->Main_model->get_one("peserta", ["id_peserta" => $koor['id_peserta']]);
+            $data['kelas']['koor'] = $koor['nama_peserta'];
+        } else {
+            $data['kelas']['koor'] = "LKP TAR-Q";
+        }
+
+        // $data['peserta'] = $this->Main_model->get_all("peserta", ["id_kelas" => $kelas['id_kelas']]);
+
+        $data['surah'] = $this->Main_model->get_all("surah", "", "id");
+
+        // var_dump($jadwal);
+        $this->load->view("templates/header", $data);
+        $this->load->view("page/kelas/detail-kelas-tahsin", $data);
+        $this->load->view("templates/footer", $data);
+    }
+    
+    public function b_arab($id_jadwal){
+        $data = $this->Main_model->sidebar();
+        $data['title'] = "Kelas Bahasa Arab";
+        $nip = $this->session->userdata('nip');
+
+        $jadwal = $this->Main_model->get_one("jadwal", ["md5(id_jadwal)" => $id_jadwal]);
+        $kelas = $this->Main_model->get_one("kelas", ["id_kelas" => $jadwal['id_kelas'], "nip" => $nip]);
+        $koor = $this->Main_model->get_one("kelas_koor", ["id_kelas" => $kelas['id_kelas']]);
+
+        $data['kelas'] = $kelas;
+        $data['kelas']['hari'] = $jadwal['hari'];
+        $data['kelas']['jam'] = $jadwal['jam'];
+        $data['kelas']['tempat'] = $jadwal['tempat'];
+        $data['kelas']['kbm'] = COUNT($this->Main_model->get_all("kbm", ["id_kelas" => $kelas['id_kelas'], "nip" => $nip, "MONTH(tgl)" => date('m'), "YEAR(tgl)" => date('Y')]));
+        
+        if($koor) {
+            $koor = $this->Main_model->get_one("peserta", ["id_peserta" => $koor['id_peserta']]);
+            $data['kelas']['koor'] = $koor['nama_peserta'];
+        } else {
+            $data['kelas']['koor'] = "LKP TAR-Q";
+        }
+
+        // $data['peserta'] = $this->Main_model->get_all("peserta", ["id_kelas" => $kelas['id_kelas']]);
+
+        $data['surah'] = $this->Main_model->get_all("surah", "", "id");
+
+        // var_dump($jadwal);
+        $this->load->view("templates/header", $data);
+        $this->load->view("page/kelas/detail-kelas-arab", $data);
+        $this->load->view("templates/footer", $data);
     }
 
     // edit
@@ -340,24 +300,6 @@ class Kelas extends CI_CONTROLLER{
             }
             redirect($_SERVER['HTTP_REFERER']);
         }
-        
-        // public function add_kbm_pembinaan(){
-        //     $tgl = $this->input->post("tgl");
-        //     $id = $this->session->userdata('nip');
-        //     $id_kelas = $this->input->post("id_kelas");
-        //     $data = $this->Main_model->get_one("kbm_pembinaan", ["tgl" => $tgl, "id_kelas" => $id_kelas]);
-        //     if($data){
-        //         $this->session->set_flashdata('pesan', '<div class="alert alert-danger alert-dismissible fade show" role="alert"><i class="fa fa-times-circle text-danger mr-1"></i> Gagal menambahkan KBM, Anda telah melakukan KBM di tanggal yang Anda masukkan<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
-        //     } else {
-        //         if(date('my', strtotime($tgl)) == date('my')){
-        //             $this->Civitas_model->add_kbm_pembinaan();
-        //             $this->session->set_flashdata('pesan', '<div class="alert alert-success alert-dismissible fade show" role="alert"><i class="fa fa-check-circle text-success mr-1"></i> Berhasil menambahkan KBM<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
-        //         } else {
-        //             $this->session->set_flashdata('pesan', '<div class="alert alert-danger alert-dismissible fade show" role="alert"><i class="fa fa-times-circle text-danger mr-1"></i> Gagal menambahkan KBM, Tgl KBM yang Anda masukkan tidak sesuai dengan periode saat ini<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
-        //         }
-        //     }
-        //     redirect($_SERVER['HTTP_REFERER']);
-        // }
 
         public function add_kbm_pembinaan(){
             $tgl = $this->input->post("tgl");
@@ -503,7 +445,7 @@ class Kelas extends CI_CONTROLLER{
             $id_kbm = $this->input->post("id_kbm");
             $materi = $this->input->post("materi");
             $tugas = $this->input->post("tugas");
-            $keterangan_badal = $this->input->post("keterangan_badal");
+            $keterangan_badal = "badal";
             $peserta = $this->input->post("nip");
 
             $kpq = $this->Main_model->get_one("kpq", ["nip" => $nip]);
@@ -639,9 +581,65 @@ class Kelas extends CI_CONTROLLER{
             }
             redirect($_SERVER['HTTP_REFERER']);
         }
+
+        public function add_setoran(){
+            $data = $this->Kelas_model->add_setoran();
+            echo json_encode("1");
+        }
+
+        public function add_laporan(){
+            $data = $this->Kelas_model->add_laporan();
+            echo json_encode("1");
+        }
+        
+        public function add_laporan_arab(){
+            $data = $this->Kelas_model->add_laporan_arab();
+            echo json_encode("1");
+        }
     // add
 
     // get
+        public function get_setoran($jenis){
+            $no_peserta = $this->input->post("no_peserta");
+            $setor = $this->Main_model->get_all("setoran_tahfidz", ["no_peserta" => $no_peserta, "jenis" => $jenis, "hapus" => 0], "tgl_setor", "DESC");
+            $data = [];
+            foreach ($setor as $i => $setor) {
+                $data[$i] = $setor;
+                $data[$i]['tgl_setor'] = date("d-m-Y", strtotime($setor['tgl_setor']));
+                $data[$i]['setoran'] = substr(str_replace("###", ", ", $setor['setoran']),0 ,-2);
+            }
+            echo json_encode($data);
+        }
+        
+        public function get_laporan(){
+            $no_peserta = $this->input->post("no_peserta");
+            $peserta = $this->Main_model->get_one("peserta", ["no_peserta" => $no_peserta]);
+            $laporan = $this->Main_model->get_all("laporan_tahsin", ["no_peserta" => $no_peserta, "id_kelas" => $peserta['id_kelas'], "hapus" => 0], "tgl_input", "DESC");
+            $data = [];
+            foreach ($laporan as $i => $laporan) {
+                $data[$i] = $laporan;
+                $data[$i]['periode'] = date("M(y)", strtotime($laporan['tgl_awal'])) . " - " . date("M(y)", strtotime($laporan['tgl_akhir']));
+            }
+            echo json_encode($data);
+        }
+        
+        public function get_laporan_arab(){
+            $no_peserta = $this->input->post("no_peserta");
+            $peserta = $this->Main_model->get_one("peserta", ["no_peserta" => $no_peserta]);
+            $laporan = $this->Main_model->get_all("laporan_arab", ["no_peserta" => $no_peserta, "id_kelas" => $peserta['id_kelas'], "hapus" => 0], "tgl_input", "DESC");
+            $data = [];
+            foreach ($laporan as $i => $laporan) {
+                $data[$i] = $laporan;
+                $data[$i]['periode'] = date("M(y)", strtotime($laporan['tgl_awal'])) . " - " . date("M(y)", strtotime($laporan['tgl_akhir']));
+            }
+            echo json_encode($data);
+        }
+        
+        public function get_peserta(){
+            $data = $this->Kelas_model->get_peserta();
+            echo json_encode($data);
+        }
+
         public function get_peserta_aktif(){
             $id = $this->input->post("id");
             if($this->input->post("tipe")){
@@ -686,29 +684,6 @@ class Kelas extends CI_CONTROLLER{
             $data = $this->Civitas_model->get_detail_kbm($id);
             echo json_encode($data);
         }
-
-        // public function get_detail_kbm_pembinaan(){
-        //     $data = [];
-        //     $id = $this->input->post("id");
-        //     $bulan = date("m");
-        //     $tahun = date("Y");
-            
-        //     $kbm = $this->Main_model->get_all("kbm_pembinaan", ["id_kelas" => $id, "MONTH(tgl)" => $bulan, "YEAR(tgl)" => $tahun]);
-        //     foreach ($kbm as $i => $kbm) {
-        //         $badal = $this->Main_model->get_one("kbm_badal_pembinaan", ["id_kbm" => $kbm['id_kbm']]);
-        //         if($badal) {
-        //             $data[$i]['badal'] = $this->Main_model->get_one("kpq", ["nip" => $badal['nip_badal']]);
-        //         } 
-        //         else {
-        //             $data[$i]['badal'] = "";
-        //         }
-
-        //         $data[$i]['kbm'] = $kbm;
-        //         $data[$i]['peserta_hadir'] = COUNT($this->Main_model->get_all("presensi_kpq", ["id_kbm" => $kbm['id_kbm'], "hadir" => 1]));
-        //         $data[$i]['peserta_tidak_hadir'] = COUNT($this->Main_model->get_all("presensi_kpq", ["id_kbm" => $kbm['id_kbm'], "hadir" => 0]));
-        //     }
-        //     echo json_encode($data);
-        // }
 
         public function get_catatan_badal(){
             $id = $this->input->post("id");
@@ -762,6 +737,13 @@ class Kelas extends CI_CONTROLLER{
 
             echo json_encode($data);
         }
+
+        public function get_all_surah(){
+            $data['surah'] = $this->Main_model->get_all("surah", "", "id");
+
+            echo json_encode($data);
+        }
+
     // get
 
     // delete
@@ -777,17 +759,23 @@ class Kelas extends CI_CONTROLLER{
             redirect($_SERVER['HTTP_REFERER']);
         }
 
-        // public function delete_kbm_pembinaan($id){
-        //     $nip = $this->session->userdata('nip');
-        //     // $data = $this->Civitas_model->delete_kbm($id);
-        //     $data = $this->Main_model->delete_data("kbm_pembinaan", ["id_kbm" => $id, "nip" => $nip]);
-        //     if($data){
-        //         $this->Main_model->delete_data("kbm_badal_pembinaan", ["id_kbm" => $id]);
-        //         $this->Main_model->delete_data("presensi_kpq", ["id_kbm" => $id]);
-        //     }
-        //     $this->session->set_flashdata('pesan', '<div class="alert alert-success alert-dismissible fade show" role="alert"><i class="fa fa-check-circle text-success mr-1"></i> Berhasil menghapus KBM<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
-        //     redirect($_SERVER['HTTP_REFERER']);
-        // }
+        public function delete_setoran(){
+            $id = $this->input->post("id");
+            $this->Main_model->edit_data("setoran_tahfidz", ["id" => $id], ["hapus" => 1]);
+            echo json_encode("1");
+        }
+
+        public function delete_laporan(){
+            $id = $this->input->post("id");
+            $this->Main_model->edit_data("laporan_tahsin", ["id" => $id], ["hapus" => 1]);
+            echo json_encode("1");
+        }
+        
+        public function delete_laporan_arab(){
+            $id = $this->input->post("id");
+            $this->Main_model->edit_data("laporan_arab", ["id" => $id], ["hapus" => 1]);
+            echo json_encode("1");
+        }
 
         public function delete_kbm_pembinaan(){
             $nip = $this->session->userdata('nip');
