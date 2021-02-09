@@ -7,7 +7,7 @@
                 <!-- data kelas  -->
                 <div class="col-12 mb-3">
                     <ul class="list-group shadow">
-                        <li class="list-group-item list-group-item-secondary d-flex justify-content-between"><span><i class="fa fa-calendar-day mr-2"></i><?= $kelas['hari'] . " " . $kelas['jam']?></span><span>PM</span></li>
+                        <li class="list-group-item list-group-item-secondary d-flex justify-content-between"><span><i class="fa fa-calendar-day mr-2"></i><?= $kelas['hari'] . " " . $kelas['jam']?></span></li>
                         <li class="list-group-item"><i class="fa fa-book mr-2"></i><?= $kelas['program']?></li>
                         <li class="list-group-item"><i class="fa fa-user-circle mr-2"></i><?= $kelas['koor']?></li>
                         <li class="list-group-item"><i class="fa fa-map-marker-alt mr-2"></i><?= ucwords(strtolower($kelas['tempat']))?></li>
