@@ -311,7 +311,10 @@ class Kelas extends CI_CONTROLLER{
     
                 // kbm terakhir 
                 $id = $this->Main_model->get_one("kbm_pembinaan", "", "id_kbm", "DESC");
-                $id = $id['id_kbm'] + 1;
+                if($id)
+                    $id = $id['id_kbm'] + 1;
+                else 
+                    $id = 1;
     
                 // jadwal            
                 $data = $this->Main_model->get_one("kelas_pembinaan", ["id_kelas" => $this->input->post("id_kelas")]);
