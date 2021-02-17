@@ -118,7 +118,9 @@ class Pengaturan extends CI_CONTROLLER{
                         
                         //  hapus foto 
                         $hapus = $this->Main_model->get_one("kpq", ["nip" => $nip]);
-                        unlink('./assets/img/foto/'.$hapus['foto']);
+                        if($hapus['foto'] != ""){
+                            unlink('./assets/img/foto/'.$hapus['foto']);
+                        }
                          
                         if(move_uploaded_file($tmp, $folder.$gambarnya)){   
                             $this->Main_model->edit_data("kpq", ["nip" => $nip], ["foto" => $gambarnya]);
@@ -133,8 +135,8 @@ class Pengaturan extends CI_CONTROLLER{
             
                 }         
                 
-                redirect($_SERVER['HTTP_REFERER']);
             }
+            redirect($_SERVER['HTTP_REFERER']);
         }
     // edit
 
