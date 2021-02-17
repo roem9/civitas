@@ -122,23 +122,18 @@ class Pengaturan extends CI_CONTROLLER{
                          
                         if(move_uploaded_file($tmp, $folder.$gambarnya)){   
                             $this->Main_model->edit_data("kpq", ["nip" => $nip], ["foto" => $gambarnya]);
-                            echo '<script>
-                              alert("gambar Berhasil di upload");
-                              </script>';
+                            $this->session->set_flashdata('pesan', '<div class="alert alert-success alert-dismissible fade show" role="alert"><i class="fa fa-check-circle text-success mr-1"></i> Berhasil mengupload foto<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
                         
-                        }
-                            else{ // Jika Gambar Gagal Di upload 
-                        echo '<script>
-                              alert("gambar Gagal di upload");
-                           </script>';
+                        } else { // Jika Gambar Gagal Di upload 
+                            $this->session->set_flashdata('pesan', '<div class="alert alert-danger alert-dismissible fade show" role="alert"><i class="fa fa-times-circle text-danger mr-1"></i> Gagal mengupload foto<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
                         }
                      } else{ // Jika File Gambar Yang di Upload tidak sesuai eksistensi yang sudah di tetapkan
-                        echo '<script>
-                              alert("Format Gambar Tidak valid , Format Gambar Harus (JPG, Jpeg, png) ");
-                           </script>';  
+                        $this->session->set_flashdata('pesan', '<div class="alert alert-danger alert-dismissible fade show" role="alert"><i class="fa fa-times-circle text-danger mr-1"></i> Format Gambar Tidak valid , Format Gambar Harus (JPG, Jpeg, png)<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
                     }
             
                 }         
+                
+                redirect($_SERVER['HTTP_REFERER']);
             }
         }
     // edit
