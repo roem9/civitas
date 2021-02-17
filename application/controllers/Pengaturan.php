@@ -111,7 +111,7 @@ class Pengaturan extends CI_CONTROLLER{
                      if(in_array($ext,$valid)){   
                          // Perintah untuk mengupload gambar dan memberi nama baru
             
-                         $gambarnya = $nip.".".$ext;
+                         $gambarnya = $nama_gambar;
                          $gmbr  = $folder.$gambarnya;
                          
                          $tmp = $_FILES['gambar']['tmp_name'];
