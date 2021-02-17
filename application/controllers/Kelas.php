@@ -120,19 +120,17 @@ class Kelas extends CI_CONTROLLER{
         
     }
 
-    public function tahfidz($id_jadwal){
+    public function tahfidz($id_kelas){
         $data = $this->Main_model->sidebar();
-        $data['title'] = "Kelas Tahfidz";
+        $data['title'] = "Laporan Tahfidz";
         $nip = $this->session->userdata('nip');
 
-        $jadwal = $this->Main_model->get_one("jadwal", ["md5(id_jadwal)" => $id_jadwal]);
-        $kelas = $this->Main_model->get_one("kelas", ["id_kelas" => $jadwal['id_kelas'], "nip" => $nip]);
+        $jadwal = $this->Main_model->get_all("jadwal", ["md5(id_kelas)" => $id_kelas, "status" => "aktif"]);
+        $kelas = $this->Main_model->get_one("kelas", ["md5(id_kelas)" => $id_kelas, "nip" => $nip]);
         $koor = $this->Main_model->get_one("kelas_koor", ["id_kelas" => $kelas['id_kelas']]);
 
         $data['kelas'] = $kelas;
-        $data['kelas']['hari'] = $jadwal['hari'];
-        $data['kelas']['jam'] = $jadwal['jam'];
-        $data['kelas']['tempat'] = $jadwal['tempat'];
+        $data['jadwal'] = $jadwal;
         $data['kelas']['kbm'] = COUNT($this->Main_model->get_all("kbm", ["id_kelas" => $kelas['id_kelas'], "nip" => $nip, "MONTH(tgl)" => date('m'), "YEAR(tgl)" => date('Y')]));
         
         if($koor) {
@@ -142,29 +140,24 @@ class Kelas extends CI_CONTROLLER{
             $data['kelas']['koor'] = "LKP TAR-Q";
         }
 
-        // $data['peserta'] = $this->Main_model->get_all("peserta", ["id_kelas" => $kelas['id_kelas']]);
-
         $data['surah'] = $this->Main_model->get_all("surah", "", "id");
 
-        // var_dump($jadwal);
         $this->load->view("templates/header", $data);
         $this->load->view("page/kelas/detail-kelas-tahfidz", $data);
         $this->load->view("templates/footer", $data);
     }
     
-    public function tahsin($id_jadwal){
+    public function tahsin($id_kelas){
         $data = $this->Main_model->sidebar();
-        $data['title'] = "Kelas Tahsin";
+        $data['title'] = "Laporan Tahsin";
         $nip = $this->session->userdata('nip');
 
-        $jadwal = $this->Main_model->get_one("jadwal", ["md5(id_jadwal)" => $id_jadwal]);
-        $kelas = $this->Main_model->get_one("kelas", ["id_kelas" => $jadwal['id_kelas'], "nip" => $nip]);
+        $jadwal = $this->Main_model->get_all("jadwal", ["md5(id_kelas)" => $id_kelas, "status" => "aktif"]);
+        $kelas = $this->Main_model->get_one("kelas", ["md5(id_kelas)" => $id_kelas, "nip" => $nip]);
         $koor = $this->Main_model->get_one("kelas_koor", ["id_kelas" => $kelas['id_kelas']]);
 
         $data['kelas'] = $kelas;
-        $data['kelas']['hari'] = $jadwal['hari'];
-        $data['kelas']['jam'] = $jadwal['jam'];
-        $data['kelas']['tempat'] = $jadwal['tempat'];
+        $data['jadwal'] = $jadwal;
         $data['kelas']['kbm'] = COUNT($this->Main_model->get_all("kbm", ["id_kelas" => $kelas['id_kelas'], "nip" => $nip, "MONTH(tgl)" => date('m'), "YEAR(tgl)" => date('Y')]));
         
         if($koor) {
@@ -173,30 +166,24 @@ class Kelas extends CI_CONTROLLER{
         } else {
             $data['kelas']['koor'] = "LKP TAR-Q";
         }
-
-        // $data['peserta'] = $this->Main_model->get_all("peserta", ["id_kelas" => $kelas['id_kelas']]);
-
         $data['surah'] = $this->Main_model->get_all("surah", "", "id");
 
-        // var_dump($jadwal);
         $this->load->view("templates/header", $data);
         $this->load->view("page/kelas/detail-kelas-tahsin", $data);
         $this->load->view("templates/footer", $data);
     }
     
-    public function b_arab($id_jadwal){
+    public function b_arab($id_kelas){
         $data = $this->Main_model->sidebar();
-        $data['title'] = "Kelas Bahasa Arab";
+        $data['title'] = "Laporan Bahasa Arab";
         $nip = $this->session->userdata('nip');
 
-        $jadwal = $this->Main_model->get_one("jadwal", ["md5(id_jadwal)" => $id_jadwal]);
-        $kelas = $this->Main_model->get_one("kelas", ["id_kelas" => $jadwal['id_kelas'], "nip" => $nip]);
+        $jadwal = $this->Main_model->get_all("jadwal", ["md5(id_kelas)" => $id_kelas, "status" => "aktif"]);
+        $kelas = $this->Main_model->get_one("kelas", ["md5(id_kelas)" => $id_kelas, "nip" => $nip]);
         $koor = $this->Main_model->get_one("kelas_koor", ["id_kelas" => $kelas['id_kelas']]);
 
         $data['kelas'] = $kelas;
-        $data['kelas']['hari'] = $jadwal['hari'];
-        $data['kelas']['jam'] = $jadwal['jam'];
-        $data['kelas']['tempat'] = $jadwal['tempat'];
+        $data['jadwal'] = $jadwal;
         $data['kelas']['kbm'] = COUNT($this->Main_model->get_all("kbm", ["id_kelas" => $kelas['id_kelas'], "nip" => $nip, "MONTH(tgl)" => date('m'), "YEAR(tgl)" => date('Y')]));
         
         if($koor) {
@@ -205,12 +192,9 @@ class Kelas extends CI_CONTROLLER{
         } else {
             $data['kelas']['koor'] = "LKP TAR-Q";
         }
-
-        // $data['peserta'] = $this->Main_model->get_all("peserta", ["id_kelas" => $kelas['id_kelas']]);
-
+        
         $data['surah'] = $this->Main_model->get_all("surah", "", "id");
 
-        // var_dump($jadwal);
         $this->load->view("templates/header", $data);
         $this->load->view("page/kelas/detail-kelas-arab", $data);
         $this->load->view("templates/footer", $data);
@@ -604,7 +588,7 @@ class Kelas extends CI_CONTROLLER{
     // get
         public function get_setoran($jenis){
             $no_peserta = $this->input->post("no_peserta");
-            $setor = $this->Main_model->get_all("setoran_tahfidz", ["no_peserta" => $no_peserta, "jenis" => $jenis, "hapus" => 0], "tgl_setor", "DESC");
+            $setor = $this->Main_model->get_all("setoran_tahfidz", ["no_peserta" => $no_peserta, "MONTH(tgl_input)" => date("m"), "YEAR(tgl_input)" => date("Y"), "jenis" => $jenis, "hapus" => 0], "tgl_setor", "DESC");
             $data = [];
             foreach ($setor as $i => $setor) {
                 $data[$i] = $setor;
@@ -617,7 +601,7 @@ class Kelas extends CI_CONTROLLER{
         public function get_laporan(){
             $no_peserta = $this->input->post("no_peserta");
             $peserta = $this->Main_model->get_one("peserta", ["no_peserta" => $no_peserta]);
-            $laporan = $this->Main_model->get_all("laporan_tahsin", ["no_peserta" => $no_peserta, "id_kelas" => $peserta['id_kelas'], "hapus" => 0], "tgl_input", "DESC");
+            $laporan = $this->Main_model->get_all("laporan_tahsin", ["no_peserta" => $no_peserta, "MONTH(tgl_input)" => date("m"), "YEAR(tgl_input)" => date("Y"), "id_kelas" => $peserta['id_kelas'], "hapus" => 0], "tgl_input", "DESC");
             $data = [];
             foreach ($laporan as $i => $laporan) {
                 $data[$i] = $laporan;
@@ -629,7 +613,7 @@ class Kelas extends CI_CONTROLLER{
         public function get_laporan_arab(){
             $no_peserta = $this->input->post("no_peserta");
             $peserta = $this->Main_model->get_one("peserta", ["no_peserta" => $no_peserta]);
-            $laporan = $this->Main_model->get_all("laporan_arab", ["no_peserta" => $no_peserta, "id_kelas" => $peserta['id_kelas'], "hapus" => 0], "tgl_input", "DESC");
+            $laporan = $this->Main_model->get_all("laporan_arab", ["no_peserta" => $no_peserta, "MONTH(tgl_input)" => date("m"), "YEAR(tgl_input)" => date("Y"), "id_kelas" => $peserta['id_kelas'], "hapus" => 0], "tgl_input", "DESC");
             $data = [];
             foreach ($laporan as $i => $laporan) {
                 $data[$i] = $laporan;

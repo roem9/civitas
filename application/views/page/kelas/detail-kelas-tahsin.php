@@ -7,14 +7,18 @@
                 <!-- data kelas  -->
                 <div class="col-12 mb-3">
                     <ul class="list-group shadow">
-                        <li class="list-group-item list-group-item-secondary d-flex justify-content-between"><span><i class="fa fa-calendar-day mr-2"></i><?= $kelas['hari'] . " " . $kelas['jam']?></span></li>
                         <li class="list-group-item"><i class="fa fa-book mr-2"></i><?= $kelas['program']?></li>
                         <li class="list-group-item"><i class="fa fa-user-circle mr-2"></i><?= $kelas['koor']?></li>
                         <li class="list-group-item"><i class="fa fa-map-marker-alt mr-2"></i><?= ucwords(strtolower($kelas['tempat']))?></li>
-                        <li class="list-group-item d-flex justify-content-between">
-                            <span>
-                                <a href="javascript:void(0)" data-id="<?= $kelas['id_kelas']?>" class="btn btn-md btn-primary" id="btnPeserta">peserta</a>
-                            </span>
+                        <?php if($jadwal) :?>
+                            <?php foreach ($jadwal as $jadwal) :?>
+                                <li class="list-group-item"><i class="fa fa-clock"></i> <?= $jadwal['hari'] . " " . $jadwal['jam']?></li>
+                            <?php endforeach;?>
+                        <?php endif;?>
+                        <li class="list-group-item d-flex justify-content-center">
+                            <span><a href="<?= base_url()?>kelas/tahsin/<?= md5($kelas['id_kelas'])?>" class="btn btn-sm btn-primary mr-2">tahsin</a></span>
+                            <span><a href="<?= base_url()?>kelas/tahfidz/<?= md5($kelas['id_kelas'])?>" class="btn btn-sm btn-secondary mr-2">tahfidz</a></span>
+                            <span><a href="<?= base_url()?>kelas/b_arab/<?= md5($kelas['id_kelas'])?>" class="btn btn-sm btn-secondary mr-2">b.arab</a></span>
                         </li>
                     </ul>
                 </div>
@@ -22,7 +26,7 @@
 
                 <div class="col-12 mb-3" id="listPeserta">
                     <ul class="list-group">
-                        <li class="list-group-item list-group-item-success"><strong>Laporan Peserta</strong></li>
+                        <li class="list-group-item list-group-item-success"><strong>Peserta</strong></li>
                         <div id="list-peserta"></div>
                     </ul>
                 </div>
@@ -132,8 +136,10 @@
 <script>
     $("#listPeserta").hide();
 
-    $("#btnPeserta").click(function(){
-        let id = $(this).data("id");
+    peserta(<?= $kelas['id_kelas']?>);
+
+    function peserta (data){
+        let id = data;
         let html = "";
 
         data = {id: id};
@@ -155,8 +161,7 @@
         } else {
             $("#listPeserta").hide();
         }
-        
-    })
+    }
 
     $("#list-peserta").on("click", ".btnformLaporan", function(){
         btn_3();

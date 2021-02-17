@@ -7,14 +7,18 @@
                 <!-- data kelas  -->
                 <div class="col-12 mb-3">
                     <ul class="list-group shadow">
-                        <li class="list-group-item list-group-item-secondary d-flex justify-content-between"><span><i class="fa fa-calendar-day mr-2"></i><?= $kelas['hari'] . " " . $kelas['jam']?></span></li>
                         <li class="list-group-item"><i class="fa fa-book mr-2"></i><?= $kelas['program']?></li>
                         <li class="list-group-item"><i class="fa fa-user-circle mr-2"></i><?= $kelas['koor']?></li>
                         <li class="list-group-item"><i class="fa fa-map-marker-alt mr-2"></i><?= ucwords(strtolower($kelas['tempat']))?></li>
-                        <li class="list-group-item d-flex justify-content-between">
-                            <span>
-                                <a href="javascript:void(0)" data-id="<?= $kelas['id_kelas']?>" class="btn btn-md btn-primary" id="btnPeserta">peserta</a>
-                            </span>
+                        <?php if($jadwal) :?>
+                            <?php foreach ($jadwal as $jadwal) :?>
+                                <li class="list-group-item"><i class="fa fa-clock"></i> <?= $jadwal['hari'] . " " . $jadwal['jam']?></li>
+                            <?php endforeach;?>
+                        <?php endif;?>
+                        <li class="list-group-item d-flex justify-content-center">
+                            <span><a href="<?= base_url()?>kelas/tahsin/<?= md5($kelas['id_kelas'])?>" class="btn btn-sm btn-secondary mr-2">tahsin</a></span>
+                            <span><a href="<?= base_url()?>kelas/tahfidz/<?= md5($kelas['id_kelas'])?>" class="btn btn-sm btn-primary mr-2">tahfidz</a></span>
+                            <span><a href="<?= base_url()?>kelas/b_arab/<?= md5($kelas['id_kelas'])?>" class="btn btn-sm btn-secondary mr-2">b.arab</a></span>
                         </li>
                     </ul>
                 </div>
@@ -22,7 +26,7 @@
 
                 <div class="col-12 mb-3" id="listPeserta">
                     <ul class="list-group">
-                        <li class="list-group-item list-group-item-success"><strong>Setoran Peserta</strong></li>
+                        <li class="list-group-item list-group-item-success"><strong>Peserta</strong></li>
                         <div id="list-peserta"></div>
                     </ul>
                 </div>
@@ -113,14 +117,14 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div class="form-group">
+                                    <label for="nilai">Nilai</label>
+                                    <input type="number" name="nilai" id="nilai0" class="form-control form-control-md" required>
+                                </div>
                                 <div class="form-add"></div>
                                 <div class="d-flex justify-content-center">
                                     <a href="javascript:void(0)" class="btn btn-sm btn-danger mr-3" id="btnHapus"><i class="fa fa-minus"></i></a>
                                     <a href="javascript:void(0)" class="btn btn-sm btn-success" id="btnTambah"><i class="fa fa-plus"></i></a>
-                                </div>
-                                <div class="form-group">
-                                    <label for="nilai">Nilai</label>
-                                    <input type="number" name="nilai" id="nilai" class="form-control form-control-md" required>
                                 </div>
                                 <div class="form-group">
                                     <label for="keterangan">Catatan</label>
@@ -180,6 +184,10 @@
                         <input type="number" name="akhir" id="akhir`+x+`" min="1" max="" class="form-control form-control-md" required>
                     </div>
                 </div>
+            </div>
+            <div class="form-group form`+x+` form-delete">
+                <label for="nilai`+x+`">Nilai `+urut+`</label>
+                <input type="number" name="nilai" id="nilai`+x+`" class="form-control form-control-md" required>
             </div>`
         );
     })
@@ -192,9 +200,11 @@
             urut--;
         }
     })
+    
+    peserta(<?= $kelas['id_kelas']?>);
 
-    $("#btnPeserta").click(function(){
-        let id = $(this).data("id");
+    function peserta (data){
+        let id = data;
         let html = "";
 
         data = {id: id};
@@ -217,7 +227,7 @@
             $("#listPeserta").hide();
         }
         
-    })
+    }
 
     // if surah change 
     $(document).on('change', "#surah", function(){
@@ -283,9 +293,6 @@
                         </a>
                         <strong>`+result.tgl_setor+`</strong>
                     </span>
-                    <span>
-                        <strong>`+result.nilai+`</strong>
-                    </span>
                 </li>
                 <li class="list-group-item">
                     <small>`+result.setoran+`<br>catatan : `+result.keterangan+`</small>
@@ -304,9 +311,6 @@
                             <i class="fa fa-minus-circle text-danger"></i>
                         </a>
                         <strong>`+result.tgl_setor+`</strong>
-                    </span>
-                    <span>
-                        <strong>`+result.nilai+`</strong>
                     </span>
                 </li>
                 <li class="list-group-item">
@@ -327,7 +331,7 @@
                 let id_kelas = $("#id_kelas").val()
                 let tgl_setor = $("#tgl_setor").val()
                 let jenis = $("#jenis").val()
-                let nilai = $("#nilai").val()
+                // let nilai = $("#nilai").val()
                 let keterangan = $("#keterangan").val()
 
                 html = "";
@@ -335,7 +339,13 @@
                 $("select[name='surah']").each(function(i){
                     let surah = $(this).find('option:selected').text();
                     let ayat = $("#awal"+i).val() + " s.d " +$("#akhir"+i).val()
-                    html += surah+" "+ayat+"###";
+                    let nilai = $("#nilai"+i).val();
+                    html += surah+" "+ayat+" (<b>"+nilai+"</b>)###";
+                });
+
+                let nilai = ""
+                $("input[name='nilai']").each(function(i){
+                    nilai += $("#nilai"+i).val()+"###";
                 });
 
                 setoran = html;
