@@ -38,6 +38,20 @@ class Pengaturan extends CI_CONTROLLER{
         $this->load->view("templates/footer");
     }
 
+    public function foto(){
+        $data = $this->Main_model->sidebar();
+        $nip = $this->session->userdata('nip');
+        $data['title'] = "Upload Foto";
+
+        // $data['kpq'] = $this->Civitas_model->get_data_kpq($nip);
+        $data['kpq'] = $this->Main_model->get_one("kpq", ["nip" => $nip]);
+        
+        // var_dump($data['sedia']);
+        $this->load->view("templates/header", $data);
+        $this->load->view("page/foto", $data);
+        $this->load->view("templates/footer");
+    }
+
     // edit
         public function edit_kpq(){
             $nip = $this->session->userdata('nip');
@@ -78,6 +92,54 @@ class Pengaturan extends CI_CONTROLLER{
                 $this->session->set_flashdata('pesan', '<div class="alert alert-danger alert-dismissible fade show" role="alert"><i class="fa fa-times-circle text-danger mr-1"></i> Gagal merubah password. Form password dan konfirm password harus sama<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
             }
             redirect($_SERVER['HTTP_REFERER']);
+        }
+
+        public function edit_foto(){
+            $nip = $this->session->userdata('nip');
+            
+            if(isset($_FILES['gambar'])) {
+                $nama_gambar = $_FILES['gambar'] ['name']; // Nama Gambar
+                $size        = $_FILES['gambar'] ['size'];// Size Gambar
+                $error       = $_FILES['gambar'] ['error'];
+                $tipe_video  = $_FILES['gambar'] ['type']; //tipe gambar untuk filter
+                $folder      = "./assets/img/foto/"; //folder tujuan upload
+                $valid       = array('jpg','JPG','png','PNG','jpeg','JPEG'); //Format File yang di ijinkan Masuk ke server
+                
+                if(strlen($nama_gambar)){   
+                     // Perintah untuk mengecek format gambar
+                     list($txt, $ext) = explode(".", $nama_gambar);
+                     if(in_array($ext,$valid)){   
+                         // Perintah untuk mengupload gambar dan memberi nama baru
+            
+                         $gambarnya = $nip.".".$ext;
+                         $gmbr  = $folder.$gambarnya;
+                         
+                         $tmp = $_FILES['gambar']['tmp_name'];
+                        
+                        //  hapus foto 
+                        $hapus = $this->Main_model->get_one("kpq", ["nip" => $nip]);
+                        unlink('./assets/img/foto/'.$hapus['foto']);
+                         
+                        if(move_uploaded_file($tmp, $folder.$gambarnya)){   
+                            $this->Main_model->edit_data("kpq", ["nip" => $nip], ["foto" => $gambarnya]);
+                            echo '<script>
+                              alert("gambar Berhasil di upload");
+                              </script>';
+                        
+                        }
+                            else{ // Jika Gambar Gagal Di upload 
+                        echo '<script>
+                              alert("gambar Gagal di upload");
+                           </script>';
+                        }
+                     } else{ // Jika File Gambar Yang di Upload tidak sesuai eksistensi yang sudah di tetapkan
+                        echo '<script>
+                              alert("Format Gambar Tidak valid , Format Gambar Harus (JPG, Jpeg, png) ");
+                           </script>';  
+                    }
+            
+                }         
+            }
         }
     // edit
 
