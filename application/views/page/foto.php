@@ -31,6 +31,6 @@
 <div class="overlay"></div>
 
 <script>
-    $("#foto").addClass("active");
+    $("#profil").addClass("active");
 </script>
 

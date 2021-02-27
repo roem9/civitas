@@ -11,6 +11,19 @@ class Pengaturan extends CI_CONTROLLER{
 		}
     }
 
+    public function index(){
+        $data = $this->Main_model->sidebar();
+        $nip = $this->session->userdata('nip');
+
+        $data['title'] = "Pengaturan";
+        
+        $data['kpq'] = $this->Civitas_model->get_data_kpq($nip);
+        
+        $this->load->view("templates/header", $data);
+        $this->load->view("page/pengaturan/index", $data);
+        $this->load->view("templates/footer");
+    }
+
     public function password(){
         $data = $this->Main_model->sidebar();
         $nip = $this->session->userdata('nip');

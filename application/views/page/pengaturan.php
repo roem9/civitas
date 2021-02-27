@@ -35,7 +35,7 @@
 <div class="overlay"></div>
 
 <script>
-    $("#password").addClass("active");
+    $("#profil").addClass("active");
     $("#btn-simpan-profil").click(function(){
         var c = confirm('Yakin akan menyimpan data profil Anda?')
         return c;
