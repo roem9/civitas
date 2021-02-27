@@ -178,8 +178,8 @@
                                 <div class="col-8">`+index+`. `+peserta.nama_kpq+`</div>
                                 <div class="col-2">
                                     <select name="keterangan[]" id="keterangan" class="form form-control-sm">
-                                        <option value="hadir" selected>Hadir</option>
-                                        <option value="tidak hadir">Tdk Hadir</option>
+                                        <option value="hadir">Hadir</option>
+                                        <option value="tidak hadir" selected>Tdk Hadir</option>
                                         <option value="izin">Izin</option>
                                         <option value="sakit">Sakit</option>
                                     </select>
