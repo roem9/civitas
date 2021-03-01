@@ -588,7 +588,8 @@ class Kelas extends CI_CONTROLLER{
     // get
         public function get_setoran($jenis){
             $no_peserta = $this->input->post("no_peserta");
-            $setor = $this->Main_model->get_all("setoran_tahfidz", ["no_peserta" => $no_peserta, "MONTH(tgl_input)" => date("m"), "YEAR(tgl_input)" => date("Y"), "jenis" => $jenis, "hapus" => 0], "tgl_setor", "DESC");
+            $setor = $this->Main_model->get_all("setoran_tahfidz", ["no_peserta" => $no_peserta, "jenis" => $jenis, "hapus" => 0], "tgl_setor", "DESC");
+            // $setor = $this->Main_model->get_all("setoran_tahfidz", ["no_peserta" => $no_peserta, "MONTH(tgl_input)" => date("m"), "YEAR(tgl_input)" => date("Y"), "jenis" => $jenis, "hapus" => 0], "tgl_setor", "DESC");
             $data = [];
             foreach ($setor as $i => $setor) {
                 $data[$i] = $setor;
@@ -601,7 +602,8 @@ class Kelas extends CI_CONTROLLER{
         public function get_laporan(){
             $no_peserta = $this->input->post("no_peserta");
             $peserta = $this->Main_model->get_one("peserta", ["no_peserta" => $no_peserta]);
-            $laporan = $this->Main_model->get_all("laporan_tahsin", ["no_peserta" => $no_peserta, "MONTH(tgl_input)" => date("m"), "YEAR(tgl_input)" => date("Y"), "id_kelas" => $peserta['id_kelas'], "hapus" => 0], "tgl_input", "DESC");
+            $laporan = $this->Main_model->get_all("laporan_tahsin", ["no_peserta" => $no_peserta, "id_kelas" => $peserta['id_kelas'], "hapus" => 0], "tgl_input", "DESC");
+            // $laporan = $this->Main_model->get_all("laporan_tahsin", ["no_peserta" => $no_peserta, "MONTH(tgl_input)" => date("m"), "YEAR(tgl_input)" => date("Y"), "id_kelas" => $peserta['id_kelas'], "hapus" => 0], "tgl_input", "DESC");
             $data = [];
             foreach ($laporan as $i => $laporan) {
                 $data[$i] = $laporan;
@@ -613,7 +615,8 @@ class Kelas extends CI_CONTROLLER{
         public function get_laporan_arab(){
             $no_peserta = $this->input->post("no_peserta");
             $peserta = $this->Main_model->get_one("peserta", ["no_peserta" => $no_peserta]);
-            $laporan = $this->Main_model->get_all("laporan_arab", ["no_peserta" => $no_peserta, "MONTH(tgl_input)" => date("m"), "YEAR(tgl_input)" => date("Y"), "id_kelas" => $peserta['id_kelas'], "hapus" => 0], "tgl_input", "DESC");
+            $laporan = $this->Main_model->get_all("laporan_arab", ["no_peserta" => $no_peserta, "id_kelas" => $peserta['id_kelas'], "hapus" => 0], "tgl_input", "DESC");
+            // $laporan = $this->Main_model->get_all("laporan_arab", ["no_peserta" => $no_peserta, "MONTH(tgl_input)" => date("m"), "YEAR(tgl_input)" => date("Y"), "id_kelas" => $peserta['id_kelas'], "hapus" => 0], "tgl_input", "DESC");
             $data = [];
             foreach ($laporan as $i => $laporan) {
                 $data[$i] = $laporan;
